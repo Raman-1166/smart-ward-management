@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: header('Home')}"></head>
+<body>
+    <nav th:replace="~{fragments/layout :: navbar('home')}"></nav>
+
+    <header class="hero-section text-center">
+        <div class="container">
+            <h1 class="display-3 fw-bold mb-4">Smart Ward Management System</h1>
+            <p class="lead mb-5">Building a cleaner, safer, and smarter city together. Inspired by the Swachh Survekshan mission.</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="/wards" class="btn btn-primary btn-lg">Explore Wards</a>
+                <a href="/complaint/new" class="btn btn-outline-light btn-lg">Report an Issue</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container my-5">
+        <!-- Quick Stats -->
+        <div class="row g-4 mb-5">
+            <div class="col-md-4">
+                <div class="card border-0 bg-light p-4 text-center">
+                    <h3 class="display-5 fw-bold text-success" th:text="${totalWards}">0</h3>
+                    <p class="text-muted mb-0">Total Active Wards</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 bg-light p-4 text-center">
+                    <h3 class="display-5 fw-bold text-success" th:text="${totalComplaints}">0</h3>
+                    <p class="text-muted mb-0">Total Issues Resolved</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 bg-light p-4 text-center">
+                    <h3 class="display-5 fw-bold text-success" th:text="${totalFeedback}">0</h3>
+                    <p class="text-muted mb-0">Citizen Feedbacks</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ranking Table -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4">
+                        <h2 class="h4 mb-4 fw-bold"><i class="bi bi-trophy text-warning"></i> Ward Cleanliness Ranking</h2>
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Rank</th>
+                                        <th>Ward Name</th>
+                                        <th>Area</th>
+                                        <th>Efficiency Score</th>
+                                        <th>Total Feedback</th>
+                                        <th>Cleanliness Score</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="ward, iter : ${wards}">
+                                        <td th:text="${iter.index + 1}">1</td>
+                                        <td class="fw-bold" th:text="${ward.name}">Ward Name</td>
+                                        <td th:text="${ward.area}">Area</td>
+                                        <td>
+                                            <div class="progress" style="height: 10px;">
+                                                <div class="progress-bar bg-success" role="progressbar" 
+                                                     th:style="'width: ' + ${ward.cleanlinessScore} + '%'" 
+                                                     th:aria-valuenow="${ward.cleanlinessScore}" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </td>
+                                        <td><span class="badge bg-info text-dark">50+</span></td>
+                                        <td class="text-success fw-bold" th:text="${ward.cleanlinessScore} + '%'">92%</td>
+                                        <td><a th:href="@{/wards/{id}(id=${ward.id})}" class="btn btn-sm btn-outline-success">View Details</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: header('Register')}"></head>
+<body class="bg-light">
+    <nav th:replace="~{fragments/layout :: navbar('none')}"></nav>
+
+    <main class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="card shadow-lg border-0 rounded-4">
+                    <div class="card-body p-5">
+                        <div class="text-center mb-4">
+                            <i class="bi bi-person-plus text-success" style="font-size: 3rem;"></i>
+                            <h2 class="fw-bold mt-2">Join Smart Ward</h2>
+                            <p class="text-muted">Create your account to start managing your ward issues.</p>
+                        </div>
+
+                        <form th:action="@{/register}" th:object="${user}" method="post" id="registerForm">
+                            <div class="mb-3">
+                                <label for="name" class="form-label fw-bold">Full Name</label>
+                                <input type="text" th:field="*{name}" class="form-control" id="name" required placeholder="Enter your full name">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="email" class="form-label fw-bold">Email Address</label>
+                                <input type="email" th:field="*{email}" class="form-control" id="email" required placeholder="name@example.com">
+                            </div>
+
+                            <div class="mb-3 row">
+                                <div class="col-md-6 mb-3 mb-md-0">
+                                    <label for="password" class="form-label fw-bold">Password</label>
+                                    <input type="password" th:field="*{password}" class="form-control" id="password" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="confirmPassword" class="form-label fw-bold">Confirm Password</label>
+                                    <input type="password" class="form-control" id="confirmPassword" required>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="ward" class="form-label fw-bold">Residential Ward</label>
+                                <select th:field="*{ward.id}" class="form-select" id="ward" required>
+                                    <option value="" disabled selected>Select your ward...</option>
+                                    <option th:each="w : ${wards}" th:value="${w.id}" th:text="${w.name} + ' (' + ${w.area} + ')'"></option>
+                                </select>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Account Type</label>
+                                <div class="d-flex gap-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" th:field="*{role}" id="roleCitizen" value="CITIZEN" checked>
+                                        <label class="form-check-label" for="roleCitizen">Citizen</label>
+                                    </div>
+                                    <div class="form-check" sec:authorize="hasRole('ADMIN')">
+                                        <input class="form-check-input" type="radio" th:field="*{role}" id="roleAdmin" value="ADMIN">
+                                        <label class="form-check-label" for="roleAdmin">Admin (Setup Only)</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">Create Account</button>
+                        </form>
+
+                        <div class="text-center mt-4 border-top pt-3">
+                            <p class="mb-0">Already have an account? <a href="/login" class="text-success fw-bold text-decoration-none">Login Here</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script th:inline="javascript">
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            const pass = document.getElementById('password').value;
+            const confirm = document.getElementById('confirmPassword').value;
+            
+            if (pass !== confirm) {
+                e.preventDefault();
+                alert('Passwords do not match!');
+            }
+        });
+    </script>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

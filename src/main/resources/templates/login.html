@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: header('Login')}"></head>
+<body class="bg-light">
+    <nav th:replace="~{fragments/layout :: navbar('none')}"></nav>
+
+    <main class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-5">
+                <div class="card shadow-lg border-0 rounded-4">
+                    <div class="card-body p-5">
+                        <div class="text-center mb-4">
+                            <i class="bi bi-shield-lock text-success" style="font-size: 3rem;"></i>
+                            <h2 class="fw-bold mt-2">Welcome Back</h2>
+                            <p class="text-muted">Access your Smart Ward profile.</p>
+                        </div>
+
+                        <!-- Success Message -->
+                        <div th:if="${param.registered}" class="alert alert-success border-0 shadow-sm mb-4">
+                            Registration successful! Please login below.
+                        </div>
+
+                        <!-- Error Message -->
+                        <div th:if="${param.error}" class="alert alert-danger border-0 shadow-sm mb-4">
+                            Invalid email or password. Please try again.
+                        </div>
+
+                        <form th:action="@{/login}" method="post">
+                            <div class="mb-3">
+                                <label for="username" class="form-label fw-bold">Email Address</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-envelope text-muted"></i></span>
+                                    <input type="email" name="email" class="form-control border-start-0" id="username" required placeholder="name@example.com">
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="password" class="form-label fw-bold">Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-lock text-muted"></i></span>
+                                    <input type="password" name="password" class="form-control border-start-0" id="password" required>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between mb-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="rememberMe">
+                                    <label class="form-check-label text-muted" for="rememberMe">Remember me</label>
+                                </div>
+                                <a href="#" class="text-success text-decoration-none small">Forgot Password?</a>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">Login to Account</button>
+                        </form>
+
+                        <div class="text-center mt-4 border-top pt-3">
+                            <p class="mb-0">New to Smart Ward? <a href="/register" class="text-success fw-bold text-decoration-none">Create Account</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

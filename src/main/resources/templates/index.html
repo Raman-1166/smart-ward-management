@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Home')}"></head>
+<body>
+    <header th:replace="~{layout :: navbar}"></header>
+
+    <main class="container">
+        <div class="text-center" style="padding: 5rem 0;">
+            <h1 style="font-size: 3rem; color: var(--primary-color);">Welcome to Smart Ward System</h1>
+            <p style="font-size: 1.25rem; color: var(--text-muted); max-width: 600px; margin: 1rem auto;">
+                Inspired by Swachh Survekshan to keep our city clean, safe, and easily accessible. 
+                Manage your services, report complaints, and provide feedback directly to authorities.
+            </p>
+            <div class="mt-2" style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
+                <a href="/wards" class="btn btn-primary" style="padding: 1rem 2rem; font-size: 1.1rem;">Explore Wards</a>
+                <a href="/register" th:if="${session.loggedInUser == null}" class="btn btn-outline" style="padding: 1rem 2rem; font-size: 1.1rem;">Join as Citizen</a>
+            </div>
+        </div>
+
+        <h2 class="text-center" style="margin-top: 4rem;">Core Features</h2>
+        <div class="grid" style="margin-top: 2rem;">
+            <div class="card text-center">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🏥</div>
+                <h3>Ward Facilities</h3>
+                <p>Find Hospitals, Gyms, Medical Stores, and other critical infrastructure in your ward instantly.</p>
+            </div>
+            <div class="card text-center">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">📝</div>
+                <h3>Real-time Complaints</h3>
+                <p>Report garbage, drainage, or sanitation issues. Track the live status of your complaints.</p>
+            </div>
+            <div class="card text-center">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">⭐</div>
+                <h3>Community Feedback</h3>
+                <p>Rate your ward's cleanliness and facilities. Help authorities improve the ward rankings.</p>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

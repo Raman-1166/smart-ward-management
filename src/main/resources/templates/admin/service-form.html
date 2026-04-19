@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: header('Register Local Facility')}"></head>
+<body class="bg-light">
+    <nav th:replace="~{fragments/layout :: navbar('admin')}"></nav>
+
+    <main class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="card shadow-lg border-0 rounded-4">
+                    <div class="card-body p-5">
+                        <h2 class="fw-bold mb-4">Add Facility to Ward</h2>
+                        <h5 class="text-muted mb-4 border-bottom pb-2">Ward: <span class="text-success" th:text="${service.ward.name}">Ward Name</span></h5>
+                        
+                        <form th:action="@{/admin/wards/{wid}/services/save(wid=${wardId})}" th:object="${service}" method="post">
+                            <input type="hidden" th:field="*{id}">
+                            
+                            <div class="mb-3">
+                                <label for="name" class="form-label fw-bold">Facility Name</label>
+                                <input type="text" th:field="*{name}" class="form-control" id="name" required placeholder="e.g. Apollo Hospital or City Bank">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="category" class="form-label fw-bold">Service Type / Category</label>
+                                <select th:field="*{category}" class="form-select" id="category" required>
+                                    <option value="" disabled selected>Select category...</option>
+                                    <option th:each="cat : ${categories}" th:value="${cat}" th:text="${#strings.capitalize(#strings.toLowerCase(cat))}"></option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="address" class="form-label fw-bold">Full Address</label>
+                                <textarea th:field="*{address}" class="form-control" id="address" rows="2" placeholder="Street, Sector, Landmark..."></textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="phone" class="form-label fw-bold">Contact Number</label>
+                                <input type="text" th:field="*{phone}" class="form-control" id="phone" placeholder="e.g. 0731-123456">
+                            </div>
+
+                            <div class="mb-4 row">
+                                <div class="col-md-6 mb-3 mb-md-0">
+                                    <label for="openingTime" class="form-label fw-bold">Opening Time</label>
+                                    <input type="time" th:field="*{openingTime}" class="form-control" id="openingTime" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="closingTime" class="form-label fw-bold">Closing Time</label>
+                                    <input type="time" th:field="*{closingTime}" class="form-control" id="closingTime" required>
+                                </div>
+                            </div>
+
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-primary flex-grow-1 py-2 fw-bold rounded-pill shadow-sm">Save Facility</button>
+                                <a th:href="@{/admin/wards/{wid}/services(wid=${wardId})}" class="btn btn-light px-4 py-2 fw-bold rounded-pill">Cancel</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script th:inline="javascript">
+        // Default timings if needed
+        window.addEventListener('DOMContentLoaded', (event) => {
+            if(!document.getElementById('openingTime').value) document.getElementById('openingTime').value = "09:00";
+            if(!document.getElementById('closingTime').value) document.getElementById('closingTime').value = "18:00";
+        });
+    </script>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

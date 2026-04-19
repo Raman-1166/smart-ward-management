@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Ward Details')}"></head>
+<body>
+    <header th:replace="~{layout :: navbar}"></header>
+
+    <main class="container">
+        <div style="margin-bottom: 2rem;">
+            <a href="/wards" class="btn btn-outline" style="margin-bottom: 1rem;">&larr; Back to Wards</a>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1 th:text="'Ward ' + ${ward.wardNumber} + ': ' + ${ward.name}"></h1>
+                    <p class="text-muted" th:text="'Population: ' + ${ward.population}"></p>
+                </div>
+                <div style="text-align: right;">
+                    <span style="color: var(--warning); font-size: 1.5rem;">⭐</span>
+                    <h2 th:text="${ward.averageRating != null ? ward.averageRating + ' / 5.0' : 'No ratings yet'}"></h2>
+                </div>
+            </div>
+        </div>
+
+        <section style="margin-bottom: 3rem;">
+            <h2>Available Facilities & Services</h2>
+            <div class="grid">
+                <div class="card" th:each="facility : ${facilities}">
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                        <div style="font-size: 2rem;" th:switch="${facility.facilityType}">
+                            <span th:case="'HOSPITAL'">🏥</span>
+                            <span th:case="'GYM'">💪</span>
+                            <span th:case="'MEDICAL_STORE'">💊</span>
+                            <span th:case="'BANK'">🏦</span>
+                            <span th:case="'ELECTRICITY'">⚡</span>
+                            <span th:case="'WARD_OFFICE'">🏛️</span>
+                            <span th:case="*">📍</span>
+                        </div>
+                        <h3 th:text="${facility.name}" style="margin: 0;"></h3>
+                    </div>
+                    <p><strong>Type:</strong> <span th:text="${facility.facilityType}"></span></p>
+                    <p><strong>Timing:</strong> <span th:text="${facility.timing}"></span></p>
+                    <p><strong>Contact:</strong> <span th:text="${facility.contactNumber}"></span></p>
+                </div>
+                <div th:if="${#lists.isEmpty(facilities)}" class="alert" style="grid-column: 1/-1; background: #f1f5f9;">
+                    No facilities registered for this ward yet.
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h2>Citizen Feedback</h2>
+                <button th:if="${session.loggedInUser != null}" onclick="document.getElementById('feedbackModal').style.display='block'" class="btn btn-primary">Leave a Rating</button>
+                <a th:if="${session.loggedInUser == null}" href="/login" class="btn btn-outlineSmall">Login to Rate</a>
+            </div>
+
+            <div class="card" th:each="feedback : ${feedbacks}" style="margin-bottom: 1rem;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <strong th:text="${feedback.user.fullName}"></strong>
+                    <span style="color: var(--warning);" th:text="${'⭐'.repeat(feedback.rating)}"></span>
+                </div>
+                <p th:text="${feedback.comment}"></p>
+                <small class="text-muted" th:text="${#temporals.format(feedback.createdAt, 'dd MMM yyyy')}"></small>
+            </div>
+            
+            <div th:if="${#lists.isEmpty(feedbacks)}" class="text-center text-muted" style="padding: 2rem;">
+                No feedback received yet. Be the first to rate!
+            </div>
+        </section>
+    </main>
+
+    <!-- Feedback Modal (Simplified) -->
+    <div id="feedbackModal" style="display:none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5);">
+        <div class="form-card" style="margin-top: 10vh;">
+            <h3>Rate this Ward</h3>
+            <form th:action="@{/feedback}" method="post">
+                <input type="hidden" name="wardId" th:value="${ward.id}">
+                <div class="form-group">
+                    <label>Rating</label>
+                    <select name="rating" class="form-control" required>
+                        <option value="5">5 - Excellent</option>
+                        <option value="4">4 - Good</option>
+                        <option value="3">3 - Average</option>
+                        <option value="2">2 - Poor</option>
+                        <option value="1">1 - Very Bad</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Comments</label>
+                    <textarea name="comment" class="form-control" rows="3" required placeholder="Tell us more about the cleanliness and services..."></textarea>
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Submit Feedback</button>
+                    <button type="button" onclick="document.getElementById('feedbackModal').style.display='none'" class="btn btn-outline" style="flex: 1;">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

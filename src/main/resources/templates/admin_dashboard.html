@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Admin Dashboard')}"></head>
+<body>
+    <header th:replace="~{layout :: navbar}"></header>
+
+    <main class="container">
+        <div style="margin-bottom: 2rem;">
+            <h2 th:text="'Admin Control Panel - ' + ${user.fullName}"></h2>
+            <p class="text-muted">Manage city-wide complaints and monitor ward performance.</p>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="grid" style="margin-bottom: 3rem;">
+            <div class="card" style="border-left: 5px solid var(--primary-color);">
+                <span class="text-muted">Total Complaints</span>
+                <h2 style="font-size: 2.5rem; margin: 0;" th:text="${totalComplaints}"></h2>
+            </div>
+            <div class="card" style="border-left: 5px solid var(--warning);">
+                <span class="text-muted">Pending Action</span>
+                <h2 style="font-size: 2.5rem; margin: 0;" th:text="${pendingComplaints}"></h2>
+            </div>
+            <div class="card" style="border-left: 5px solid var(--success);">
+                <span class="text-muted">Resolved This Month</span>
+                <h2 style="font-size: 2.5rem; margin: 0;" th:text="${totalComplaints - pendingComplaints}"></h2>
+            </div>
+        </div>
+
+        <div class="card" style="padding: 0; overflow: hidden;">
+            <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-color);">
+                <h3 style="margin: 0;">Active Complaints Management</h3>
+            </div>
+            
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Citizen</th>
+                            <th>Ward</th>
+                            <th>Issue Details</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="complaint : ${complaints}">
+                            <td>
+                                <div style="font-weight: 600;" th:text="${complaint.user.fullName}"></div>
+                                <small class="text-muted" th:text="${complaint.user.email}"></small>
+                            </td>
+                            <td th:text="'Ward ' + ${complaint.ward.wardNumber}"></td>
+                            <td>
+                                <div style="font-weight: 600;" th:text="${complaint.title}"></div>
+                                <small class="text-muted" th:text="${complaint.type}"></small>
+                            </td>
+                            <td th:text="${#temporals.format(complaint.createdAt, 'dd MMM HH:mm')}"></td>
+                            <td>
+                                <span th:class="'badge ' + 
+                                    (${complaint.status == 'PENDING'} ? 'badge-pending' : 
+                                    (${complaint.status == 'IN_PROGRESS'} ? 'badge-progress' : 'badge-resolved'))"
+                                    th:text="${complaint.status}">
+                                </span>
+                            </td>
+                            <td>
+                                <form th:action="@{/admin/complaint/update}" method="post" style="display: flex; gap: 0.5rem;">
+                                    <input type="hidden" name="complaintId" th:value="${complaint.id}">
+                                    <select name="status" class="form-control" style="padding: 0.25rem; font-size: 0.8rem; width: auto;" onchange="this.form.submit()">
+                                        <option value="PENDING" th:selected="${complaint.status == 'PENDING'}">Pending</option>
+                                        <option value="IN_PROGRESS" th:selected="${complaint.status == 'IN_PROGRESS'}">Progress</option>
+                                        <option value="RESOLVED" th:selected="${complaint.status == 'RESOLVED'}">Resolved</option>
+                                    </select>
+                                </form>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(complaints)}">
+                            <td colspan="6" class="text-center" style="padding: 3rem; color: var(--text-muted);">
+                                No complaints found in the system.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

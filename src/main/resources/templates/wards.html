@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: header('Wards Directory')}"></head>
+<body>
+    <nav th:replace="~{fragments/layout :: navbar('wards')}"></nav>
+
+    <main class="container my-5">
+        <div class="row align-items-center mb-5">
+            <div class="col-lg-6">
+                <h1 class="display-5 fw-bold text-dark">Ward Directory</h1>
+                <p class="text-muted">Explore details, services, and rankings of your local wards.</p>
+            </div>
+            <div class="col-lg-6">
+                <div class="input-group input-group-lg shadow-sm rounded-pill overflow-hidden">
+                    <span class="input-group-text bg-white border-0 ps-4"><i class="bi bi-search text-success"></i></span>
+                    <input type="text" id="wardSearch" class="form-control border-0 py-3" placeholder="Search ward by name or area...">
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4" id="wardGrid">
+            <div class="col-md-6 col-lg-4 ward-item" th:each="ward : ${wards}">
+                <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden ward-card">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <span class="badge bg-success-subtle text-success p-2 px-3 rounded-pill fw-bold" th:text="${ward.area}">North</span>
+                            <div class="text-end">
+                                <small class="text-muted d-block">Score</small>
+                                <span class="fw-bold fs-5 text-success" th:text="${ward.cleanlinessScore} + '%'">92%</span>
+                            </div>
+                        </div>
+                        <h3 class="h4 fw-bold mb-2 ward-name" th:text="${ward.name}">Ward Name</h3>
+                        <p class="text-muted small mb-3"><i class="bi bi-person-badge me-1"></i> Officer: <span class="fw-medium text-dark" th:text="${ward.officerName}">Rajesh Sharma</span></p>
+                        
+                        <hr class="text-muted my-3 opacity-25">
+                        
+                        <div class="row g-2 text-center small mb-3">
+                            <div class="col-6">
+                                <div class="bg-light p-2 rounded">
+                                    <span class="d-block text-muted">Population</span>
+                                    <span class="fw-bold" th:text="${#numbers.formatInteger(ward.population, 0, 'COMMA')}">25,000</span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="bg-light p-2 rounded">
+                                    <span class="d-block text-muted">Services</span>
+                                    <span class="fw-bold">10+</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <a th:href="@{/wards/{id}(id=${ward.id})}" class="btn btn-outline-success w-100 rounded-pill fw-bold">View Full Details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div id="noResults" class="text-center my-5 d-none">
+            <i class="bi bi-search text-muted" style="font-size: 4rem;"></i>
+            <h3 class="mt-3 text-muted">No wards found matching your search.</h3>
+        </div>
+    </main>
+
+    <script th:inline="javascript">
+        document.getElementById('wardSearch').addEventListener('input', function(e) {
+            const query = e.target.value.toLowerCase();
+            const items = document.querySelectorAll('.ward-item');
+            let found = false;
+
+            items.forEach(item => {
+                const name = item.querySelector('.ward-name').textContent.toLowerCase();
+                if (name.includes(query)) {
+                    item.classList.remove('d-none');
+                    found = true;
+                } else {
+                    item.classList.add('d-none');
+                }
+            });
+
+            const empty = document.getElementById('noResults');
+            if (!found) {
+                empty.classList.remove('d-none');
+            } else {
+                empty.classList.add('d-none');
+            }
+        });
+    </script>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

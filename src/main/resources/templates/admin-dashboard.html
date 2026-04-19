@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: header('Admin Dashboard')}"></head>
+<body class="bg-light">
+    <nav th:replace="~{fragments/layout :: navbar('admin')}"></nav>
+
+    <main class="container my-5">
+        <h1 class="fw-bold mb-4">Command Center Dashboard</h1>
+
+        <!-- Stats Cards -->
+        <div class="row g-4 mb-5">
+            <div class="col-md-3">
+                <div class="card h-100 shadow-sm border-0 rounded-4 text-center p-3">
+                    <div class="card-body">
+                        <i class="bi bi-people-fill text-primary display-4 mb-3"></i>
+                        <h3 class="fw-bold" th:text="${totalUsers}">10</h3>
+                        <p class="text-muted mb-0">Registered Citizens</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card h-100 shadow-sm border-0 rounded-4 text-center p-3">
+                    <div class="card-body">
+                        <i class="bi bi-file-earmark-text text-secondary display-4 mb-3"></i>
+                        <h3 class="fw-bold" th:text="${totalComplaints}">0</h3>
+                        <p class="text-muted mb-0">Total Complaints</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card h-100 shadow-sm border-0 rounded-4 text-center p-3">
+                    <div class="card-body">
+                        <i class="bi bi-hourglass-split text-warning display-4 mb-3"></i>
+                        <h3 class="fw-bold" th:text="${pendingComplaints}">0</h3>
+                        <p class="text-muted mb-0">Pending Issues</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card h-100 shadow-sm border-0 rounded-4 text-center p-3">
+                    <div class="card-body">
+                        <i class="bi bi-check2-circle text-success display-4 mb-3"></i>
+                        <h3 class="fw-bold" th:text="${resolvedComplaints}">0</h3>
+                        <p class="text-muted mb-0">Issues Resolved</p>
+                    </div>
+                </div>
+            </div>
+        <!-- Management Cards -->
+        <div class="row g-4 mb-5">
+            <div class="col-md-6">
+                <div class="card h-100 shadow-sm border-0 rounded-4 p-4 hover-shadow transition" style="background: linear-gradient(135deg, #ffffff 0%, #f9f9f9 100%);">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-success text-white p-3 rounded-4 me-4">
+                            <i class="bi bi-geo-alt-fill fs-1"></i>
+                        </div>
+                        <div>
+                            <h3 class="fw-bold mb-1">Ward Management</h3>
+                            <p class="text-muted mb-3">Add, edit, or remove wards and their officer assignments.</p>
+                            <a href="/admin/wards" class="btn btn-success rounded-pill px-4 fw-bold">Manage Wards</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card h-100 shadow-sm border-0 rounded-4 p-4 hover-shadow transition" style="background: linear-gradient(135deg, #ffffff 0%, #f9f9f9 100%);">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-primary text-white p-3 rounded-4 me-4">
+                            <i class="bi bi-person-lines-fill fs-1"></i>
+                        </div>
+                        <div>
+                            <h3 class="fw-bold mb-1">Service Directory</h3>
+                            <p class="text-muted mb-3">Manage hospitals, banks, and schools across all wards.</p>
+                            <a href="/admin/wards" class="btn btn-primary rounded-pill px-4 fw-bold">Manage Services</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Analytics Chart -->
+            <div class="col-lg-7">
+                <div class="card shadow-sm border-0 rounded-4 h-100">
+                    <div class="card-body p-4">
+                        <h3 class="h5 fw-bold mb-4">Complaints Trend by Ward</h3>
+                        <canvas id="complaintsChart" height="250"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="col-lg-5">
+                <div class="card shadow-sm border-0 rounded-4 h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h3 class="h5 fw-bold mb-0">Recent Complaints</h3>
+                            <a href="/admin/complaints" class="text-success small fw-bold text-decoration-none">View All</a>
+                        </div>
+                        <div class="list-group list-group-flush">
+                            <div class="list-group-item px-0 py-3" th:each="c, iter : ${recentComplaints}" th:if="${iter.index < 5}">
+                                <div class="d-flex justify-content-between">
+                                    <h6 class="fw-bold mb-1" th:text="${c.ward.name}">Ward Name</h6>
+                                    <span th:class="'badge rounded-pill ' + 
+                                          (${c.status.name() == 'PENDING'} ? 'bg-warning' : 
+                                          (${c.status.name() == 'IN_PROGRESS'} ? 'bg-info' : 'bg-success'))"
+                                          th:text="${c.status}">STATUS</span>
+                                </div>
+                                <p class="text-muted small text-truncate mb-2" th:text="${c.description}">Description...</p>
+                                <form th:action="@{/admin/complaints/{id}/status(id=${c.id})}" method="post">
+                                    <div class="input-group input-group-sm">
+                                        <select name="status" class="form-select">
+                                            <option value="PENDING" th:selected="${c.status.name() == 'PENDING'}">Pending</option>
+                                            <option value="IN_PROGRESS" th:selected="${c.status.name() == 'IN_PROGRESS'}">In Progress</option>
+                                            <option value="RESOLVED" th:selected="${c.status.name() == 'RESOLVED'}">Resolved</option>
+                                        </select>
+                                        <button class="btn btn-outline-success" type="submit">Save</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script th:inline="javascript">
+        fetch('/api/admin/analytics')
+            .then(res => res.json())
+            .then(data => {
+                const ctx = document.getElementById('complaintsChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: Object.keys(data.wardAverageRatings),
+                        datasets: [{
+                            label: 'Avg Cleanliness Rating (out of 100)',
+                            data: Object.values(data.wardAverageRatings),
+                            backgroundColor: 'rgba(46, 204, 113, 0.6)',
+                            borderColor: 'rgba(46, 204, 113, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: { beginAtZero: true, max: 100 }
+                        }
+                    }
+                });
+            });
+    </script>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: header('Report an Issue')}"></head>
+<body class="bg-light">
+    <nav th:replace="~{fragments/layout :: navbar('complaint')}"></nav>
+
+    <main class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-7">
+                <div class="card shadow-lg border-0 rounded-4">
+                    <div class="card-body p-5">
+                        <div class="mb-4">
+                            <h1 class="fw-bold h2 text-dark">File a New Complaint</h1>
+                            <p class="text-muted">Directly report sanitation, drainage, or garbage issues to the ward officer.</p>
+                        </div>
+
+                        <form th:action="@{/complaint/submit}" th:object="${complaint}" method="post">
+                            <!-- Ward Selection -->
+                            <div class="mb-4">
+                                <label for="ward" class="form-label fw-bold">Select Ward</label>
+                                <select th:field="*{ward.id}" class="form-select form-select-lg shadow-sm border-0 bg-light" id="ward" required>
+                                    <option value="" disabled selected>Which ward is this for?</option>
+                                    <option th:each="w : ${wards}" th:value="${w.id}" th:text="'Ward ' + ${w.id} + ': ' + ${w.name}"></option>
+                                </select>
+                            </div>
+
+                            <div class="row g-3 mb-4">
+                                <!-- Category Selection -->
+                                <div class="col-md-6">
+                                    <label for="category" class="form-label fw-bold">Issue Category</label>
+                                    <select th:field="*{category}" class="form-select shadow-sm border-0 bg-light" id="category" required>
+                                        <option value="GARBAGE">Garbage Disposal</option>
+                                        <option value="DRAINAGE">Drainage Issue</option>
+                                        <option value="SANITATION">Sanitation / Cleaning</option>
+                                        <option value="OTHER">Other</option>
+                                    </select>
+                                </div>
+                                <!-- Photo URL Placeholder -->
+                                <div class="col-md-6">
+                                    <label for="photoUrl" class="form-label fw-bold">Photo URL (Optional)</label>
+                                    <input type="url" th:field="*{photoUrl}" class="form-control shadow-sm border-0 bg-light" id="photoUrl" placeholder="https://example.com/image.jpg">
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="description" class="form-label fw-bold">Detailed Description</label>
+                                <textarea th:field="*{description}" class="form-control shadow-sm border-0 bg-light" id="description" rows="5" required 
+                                          placeholder="Please provide precise details about the location and nature of the issue."></textarea>
+                                <div class="form-text text-muted small mt-2">Maximum 1000 characters.</div>
+                            </div>
+
+                            <div class="d-flex gap-3 mt-5">
+                                <button type="submit" class="btn btn-primary btn-lg flex-grow-1 fw-bold rounded-pill">Submit Report</button>
+                                <a href="/home" class="btn btn-light btn-lg flex-grow-1 fw-bold rounded-pill">Cancel</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

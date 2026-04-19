@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: header(${ward.id == null ? 'Add New Ward' : 'Edit Ward'})}"></head>
+<body class="bg-light">
+    <nav th:replace="~{fragments/layout :: navbar('admin')}"></nav>
+
+    <main class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="card shadow-lg border-0 rounded-4">
+                    <div class="card-body p-5">
+                        <h2 class="fw-bold mb-4" th:text="${ward.id == null ? 'Register New Ward' : 'Edit Ward Details'}">Ward Form</h2>
+                        
+                        <form th:action="@{/admin/wards/save}" th:object="${ward}" method="post">
+                            <input type="hidden" th:field="*{id}">
+                            
+                            <div class="mb-3">
+                                <label for="name" class="form-label fw-bold">Ward Name</label>
+                                <input type="text" th:field="*{name}" class="form-control" id="name" required placeholder="e.g. Vijay Nagar">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="area" class="form-label fw-bold">Area / Zone</label>
+                                <input type="text" th:field="*{area}" class="form-control" id="area" required placeholder="e.g. North Zone">
+                            </div>
+
+                            <div class="mb-3 row">
+                                <div class="col-md-6 mb-3 mb-md-0">
+                                    <label for="population" class="form-label fw-bold">Population</label>
+                                    <input type="number" th:field="*{population}" class="form-control" id="population" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="cleanlinessScore" class="form-label fw-bold">Initial Score (%)</label>
+                                    <input type="number" step="0.1" th:field="*{cleanlinessScore}" class="form-control" id="cleanlinessScore" required>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="officerName" class="form-label fw-bold">Assign Ward Officer</label>
+                                <input type="text" th:field="*{officerName}" class="form-control" id="officerName" required placeholder="Full Name of Officer">
+                            </div>
+
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-success flex-grow-1 py-2 fw-bold rounded-pill shadow-sm">Save Ward</button>
+                                <a href="/admin/wards" class="btn btn-light px-4 py-2 fw-bold rounded-pill">Cancel</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

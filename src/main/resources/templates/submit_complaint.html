@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('File Complaint')}"></head>
+<body>
+    <header th:replace="~{layout :: navbar}"></header>
+
+    <main class="container">
+        <div class="form-card" style="max-width: 700px;">
+            <h2>File a New Complaint</h2>
+            <p class="text-muted" style="margin-bottom: 2rem;">Help us identify and fix issues in your ward.</p>
+
+            <form th:action="@{/complaint}" method="post">
+                <div class="form-group">
+                    <label for="wardId">Select Ward</label>
+                    <select id="wardId" name="wardId" class="form-control" required>
+                        <option value="" disabled selected>Choose a ward...</option>
+                        <option th:each="ward : ${wards}" th:value="${ward.id}" th:text="'Ward ' + ${ward.wardNumber} + ' - ' + ${ward.name}"></option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="type">Issue Category</label>
+                    <select id="type" name="type" class="form-control" required>
+                        <option value="GARBAGE">Garbage Disposal</option>
+                        <option value="DRAINAGE">Drainage Issue</option>
+                        <option value="SANITATION">Sanitation / Cleaning</option>
+                        <option value="ELECTRICITY">Street Light / Electricity</option>
+                        <option value="ROAD">Road Maintenance</option>
+                        <option value="OTHER">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="title">Title / Subject</label>
+                    <input type="text" id="title" name="title" class="form-control" placeholder="Briefly describe the issue" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Detailed Description</label>
+                    <textarea id="description" name="description" class="form-control" rows="5" placeholder="Please provide specific location and details..." required></textarea>
+                </div>
+
+                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <button type="submit" class="btn btn-primary" style="flex: 2; padding: 1rem;">Submit Complaint</button>
+                    <a href="/dashboard" class="btn btn-outline" style="flex: 1; text-align: center; padding: 1rem;">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </main>
+</body>
+</html>

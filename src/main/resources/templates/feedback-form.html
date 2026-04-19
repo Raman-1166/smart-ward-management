@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: header('Submit Feedback')}"></head>
+<body class="bg-light">
+    <nav th:replace="~{fragments/layout :: navbar('feedback')}"></nav>
+
+    <main class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-7 col-lg-6">
+                <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+                    <div class="bg-success text-white p-5 py-4">
+                        <h2 class="fw-bold mb-1">Citizen Feedback</h2>
+                        <p class="mb-0 opacity-75">Rate ward services and help us improve.</p>
+                    </div>
+                    <div class="card-body p-5 pt-4">
+                        <form th:action="@{/feedback/submit}" th:object="${feedback}" method="post" id="feedbackForm">
+                            <div class="mb-4">
+                                <label for="feedbackWard" class="form-label fw-bold">Select Ward to Rate</label>
+                                <select th:field="*{ward.id}" class="form-select border-0 bg-light p-3" id="feedbackWard" required>
+                                    <option value="" disabled selected>Which ward are you rating?</option>
+                                    <option th:each="w : ${wards}" th:value="${w.id}" th:text="${w.name}"></option>
+                                </select>
+                            </div>
+
+                            <div class="mb-4 text-center">
+                                <label class="form-label fw-bold d-block mb-3">Your Rating</label>
+                                <div class="rating-stars fs-1" id="starSelector">
+                                    <i class="bi bi-star cursor-pointer px-1" data-value="1"></i>
+                                    <i class="bi bi-star cursor-pointer px-1" data-value="2"></i>
+                                    <i class="bi bi-star cursor-pointer px-1" data-value="3"></i>
+                                    <i class="bi bi-star cursor-pointer px-1" data-value="4"></i>
+                                    <i class="bi bi-star cursor-pointer px-1" data-value="5"></i>
+                                </div>
+                                <input type="hidden" th:field="*{rating}" id="ratingInput" required>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="comment" class="form-label fw-bold">Feedback Comments</label>
+                                <textarea th:field="*{comment}" class="form-control border-0 bg-light p-3" id="comment" rows="4" 
+                                          placeholder="Share your experience with cleanliness and services..." required></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-success btn-lg w-100 rounded-pill fw-bold">Submit Feedback</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <style>
+        .cursor-pointer { cursor: pointer; }
+    </style>
+
+    <script>
+        const stars = document.querySelectorAll('#starSelector i');
+        const input = document.getElementById('ratingInput');
+
+        stars.forEach(star => {
+            star.addEventListener('click', function() {
+                const val = this.getAttribute('data-value');
+                input.value = val;
+                
+                stars.forEach(s => {
+                    if (s.getAttribute('data-value') <= val) {
+                        s.classList.remove('bi-star');
+                        s.classList.add('bi-star-fill', 'text-warning');
+                    } else {
+                        s.classList.add('bi-star');
+                        s.classList.remove('bi-star-fill', 'text-warning');
+                    }
+                });
+            });
+        });
+    </script>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

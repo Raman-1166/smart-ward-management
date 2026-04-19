@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: header(${ward.name} + ' Details')}"></head>
+<body class="bg-light">
+    <nav th:replace="~{fragments/layout :: navbar('wards')}"></nav>
+
+    <main class="container my-5">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/wards" class="text-success text-decoration-none">Wards</a></li>
+                <li class="breadcrumb-item active" aria-current="page" th:text="${ward.name}">Ward Detail</li>
+            </ol>
+        </nav>
+
+        <div class="row g-4">
+            <!-- Left Side: Basic Info & Stats -->
+            <div class="col-lg-4">
+                <div class="card shadow-sm border-0 rounded-4 mb-4">
+                    <div class="card-body p-4">
+                        <span class="badge bg-success-subtle text-success p-2 px-3 rounded-pill fw-bold mb-3" th:text="${ward.area}">North</span>
+                        <h1 class="h2 fw-bold mb-3" th:text="${ward.name}">Ward Name</h1>
+                        
+                        <div class="rating-stars mb-4 fs-4" th:if="${averageRating > 0}">
+                            <i class="bi bi-star-fill text-warning" th:each="i : ${#numbers.sequence(1, averageRating.intValue())}"></i>
+                            <i class="bi bi-star-half text-warning" th:if="${averageRating % 1 >= 0.5}"></i>
+                            <span class="ms-2 fs-5 fw-bold text-dark" th:text="${averageRating} + ' / 5.0'">4.5</span>
+                            <span class="d-block text-muted small mt-1" th:text="${feedbackList.size()} + ' Total Reviews'">20 reviews</span>
+                        </div>
+                        <div class="mb-4 fs-6 text-muted" th:if="${averageRating == 0}">
+                             <i class="bi bi-star text-secondary"></i> No ratings yet
+                        </div>
+
+                        <div class="list-group list-group-flush mb-4">
+                            <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <span class="text-muted"><i class="bi bi-people me-2"></i> Population</span>
+                                <span class="fw-bold" th:text="${#numbers.formatInteger(ward.population, 0, 'COMMA')}">25,000</span>
+                            </div>
+                            <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <span class="text-muted"><i class="bi bi-person-badge me-2"></i> Ward Officer</span>
+                                <span class="fw-bold" th:text="${ward.officerName}">Rajesh Sharma</span>
+                            </div>
+                            <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <span class="text-muted"><i class="bi bi-graph-up-arrow me-2"></i> Cleanliness</span>
+                                <span class="text-success fw-bold" th:text="${ward.cleanlinessScore} + '%'">92%</span>
+                            </div>
+                        </div>
+
+                        <a href="/complaint/new" class="btn btn-success w-100 rounded-pill fw-bold mb-2">Report a New Issue</a>
+                        <a href="/feedback/new" class="btn btn-outline-success w-100 rounded-pill fw-bold">Give Feedback</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side: Facilities & Tabs -->
+            <div class="col-lg-8">
+                <div class="card shadow-sm border-0 rounded-4 mb-4">
+                    <div class="card-body p-4">
+                        <ul class="nav nav-pills nav-fill mb-4 bg-light p-1 rounded-pill" id="facilityTabs" role="tablist">
+                            <li class="nav-item">
+                                <button class="nav-link active rounded-pill fw-bold" id="hospital-tab" data-bs-toggle="pill" data-bs-target="#hospitals" type="button">Hospitals</button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link rounded-pill fw-bold" id="bank-tab" data-bs-toggle="pill" data-bs-target="#banks" type="button">Banks</button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link rounded-pill fw-bold" id="medical-tab" data-bs-toggle="pill" data-bs-target="#medicals" type="button">Medicals</button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link rounded-pill fw-bold" id="others-tab" data-bs-toggle="pill" data-bs-target="#others" type="button">Other</button>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content" id="facilityTabsContent">
+                            <!-- Category: Hospitals -->
+                            <div class="tab-pane fade show active" id="hospitals" role="tabpanel">
+                                <div class="row g-3">
+                                    <div class="col-12" th:each="s : ${services}" th:if="${s.category.name() == 'HOSPITAL'}">
+                                        <div class="p-3 border rounded-3 bg-white">
+                                            <div class="d-flex justify-content-between">
+                                                <h5 class="fw-bold mb-1" th:text="${s.name}">Hospital Name</h5>
+                                                <span class="badge bg-primary-subtle text-primary" th:text="${s.openingTime} + ' - ' + ${s.closingTime}">24/7</span>
+                                            </div>
+                                            <p class="text-muted small mb-2"><i class="bi bi-geo-alt me-1"></i> <span th:text="${s.address}">Address</span></p>
+                                            <p class="mb-0 small"><i class="bi bi-telephone-fill text-success me-1"></i> <span th:text="${s.phone}">Phone</span></p>
+                                        </div>
+                                    </div>
+                                    <div class="text-center py-4 text-muted" th:if="${#lists.isEmpty(services.?[category.name() == 'HOSPITAL'])}">
+                                        No hospital services listed in this ward.
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Category: Banks -->
+                            <div class="tab-pane fade" id="banks" role="tabpanel">
+                                <div class="row g-3">
+                                    <div class="col-12" th:each="s : ${services}" th:if="${s.category.name() == 'BANK'}">
+                                        <div class="p-3 border rounded-3">
+                                            <h5 class="fw-bold mb-1" th:text="${s.name}">Bank Name</h5>
+                                            <p class="text-muted small mb-2"><i class="bi bi-geo-alt me-1"></i> <span th:text="${s.address}">Address</span></p>
+                                            <p class="mb-0 small fw-bold text-success" th:text="'Open: ' + ${s.openingTime} + ' - ' + ${s.closingTime}">Timing</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-center py-4 text-muted" th:if="${#lists.isEmpty(services.?[category.name() == 'BANK'])}">
+                                        No banking services listed in this ward.
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Category: Medicals -->
+                            <div class="tab-pane fade" id="medicals" role="tabpanel">
+                                <div class="row g-3">
+                                    <div class="col-12" th:each="s : ${services}" th:if="${s.category.name() == 'MEDICAL_STORE'}">
+                                        <div class="p-3 border rounded-3">
+                                            <h5 class="fw-bold mb-1" th:text="${s.name}">Store Name</h5>
+                                            <p class="text-muted mb-0 small" th:text="${s.address}">Address</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-center py-4 text-muted" th:if="${#lists.isEmpty(services.?[category.name() == 'MEDICAL_STORE'])}">
+                                        No pharmacies listed in this ward.
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Category: Others -->
+                            <div class="tab-pane fade" id="others" role="tabpanel">
+                                <div class="row g-3">
+                                    <div class="col-12" th:each="s : ${services}" th:if="${s.category.name() != 'HOSPITAL' and s.category.name() != 'BANK' and s.category.name() != 'MEDICAL_STORE'}">
+                                        <div class="p-3 border rounded-3">
+                                            <span class="badge bg-secondary mb-2" th:text="${s.category}">Category</span>
+                                            <h5 class="fw-bold mb-1" th:text="${s.name}">Service Name</h5>
+                                            <p class="text-muted small mb-0" th:text="${s.address}">Address</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Feedback Section -->
+                <div class="card shadow-sm border-0 rounded-4">
+                    <div class="card-body p-4">
+                        <h3 class="h4 fw-bold mb-4">Latest Citizen Feedback</h3>
+                        <div class="list-group list-group-flush">
+                            <div class="list-group-item px-0 py-3" th:each="f : ${feedbackList}">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <h6 class="fw-bold mb-0" th:text="${f.user.name}">Citizen Name</h6>
+                                    <div class="text-warning small">
+                                        <i class="bi bi-star-fill" th:each="i : ${#numbers.sequence(1, f.rating)}"></i>
+                                    </div>
+                                </div>
+                                <p class="text-muted small mb-1" th:text="${f.comment}">Feedback comment...</p>
+                                <small class="text-muted fs-xs" th:text="${#temporals.format(f.createdAt, 'dd MMM yyyy')}">Date</small>
+                            </div>
+                            <div class="text-center py-4 text-muted" th:if="${#lists.isEmpty(feedbackList)}">
+                                No feedback yet. Be the first to review this ward!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>
