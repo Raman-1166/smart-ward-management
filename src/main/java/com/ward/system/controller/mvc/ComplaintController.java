@@ -23,7 +23,7 @@ public class ComplaintController {
     @GetMapping("/new")
     public String complaintForm(Model model) {
         model.addAttribute("complaint", new Complaint());
-        model.addAttribute("wards", wardService.getAllWards());
+        model.addAttribute("wards", wardService.getAllWardsList());
         return "complaint-form";
     }
 

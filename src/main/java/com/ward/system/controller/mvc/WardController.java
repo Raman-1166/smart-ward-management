@@ -5,11 +5,13 @@ import com.ward.system.service.FeedbackService;
 import com.ward.system.service.ServiceDirectoryService;
 import com.ward.system.service.WardService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/wards")
@@ -25,8 +27,8 @@ public class WardController {
     private FeedbackService feedbackService;
 
     @GetMapping
-    public String listWards(Model model) {
-        model.addAttribute("wards", wardService.getAllWards());
+    public String listWards(@RequestParam(defaultValue = "0") int page, Model model) {
+        model.addAttribute("wardsPage", wardService.getAllWards(PageRequest.of(page, 10)));
         return "wards";
     }
 

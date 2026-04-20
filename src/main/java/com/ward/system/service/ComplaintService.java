@@ -4,6 +4,8 @@ import com.ward.system.model.Complaint;
 import com.ward.system.model.Status;
 import com.ward.system.repository.ComplaintRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,7 +25,11 @@ public class ComplaintService {
         return complaintRepository.findByUserId(userId);
     }
 
-    public List<Complaint> getAllComplaints() {
+    public Page<Complaint> getAllComplaints(Pageable pageable) {
+        return complaintRepository.findAll(pageable);
+    }
+
+    public List<Complaint> getAllComplaintsList() {
         return complaintRepository.findAll();
     }
 

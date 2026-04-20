@@ -34,3 +34,6 @@ build/
 desktop.ini
 thumbs.db
 .DS_Store
+
+.env
+*.class

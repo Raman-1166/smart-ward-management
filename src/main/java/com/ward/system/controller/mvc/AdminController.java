@@ -5,6 +5,7 @@ import com.ward.system.service.ComplaintService;
 import com.ward.system.service.UserService;
 import com.ward.system.service.WardService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -28,17 +29,17 @@ public class AdminController {
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
         model.addAttribute("totalUsers", userService.getAllUsers().size());
-        model.addAttribute("totalComplaints", complaintService.getAllComplaints().size());
+        model.addAttribute("totalComplaints", complaintService.getAllComplaintsList().size());
         model.addAttribute("pendingComplaints", complaintService.filterByStatus(Status.PENDING).size());
         model.addAttribute("resolvedComplaints", complaintService.filterByStatus(Status.RESOLVED).size());
-        model.addAttribute("recentComplaints", complaintService.getAllComplaints());
+        model.addAttribute("recentComplaints", complaintService.getAllComplaintsList());
         return "admin-dashboard";
     }
 
     // Ward Management
     @GetMapping("/wards")
     public String listWards(Model model) {
-        model.addAttribute("wards", wardService.getAllWards());
+        model.addAttribute("wards", wardService.getAllWardsList());
         return "admin/ward-list";
     }
 
@@ -110,8 +111,8 @@ public class AdminController {
     }
 
     @GetMapping("/complaints")
-    public String adminComplaints(Model model) {
-        model.addAttribute("complaints", complaintService.getAllComplaints());
+    public String adminComplaints(@RequestParam(defaultValue = "0") int page, Model model) {
+        model.addAttribute("complaintsPage", complaintService.getAllComplaints(PageRequest.of(page, 10)));
         return "admin-complaints";
     }
 

@@ -36,4 +36,8 @@ public class FeedbackService {
     public List<Feedback> getFeedbackByWard(Long wardId) {
         return feedbackRepository.findByWardId(wardId);
     }
+
+    public List<Feedback> getAllFeedback() {
+        return feedbackRepository.findAll();
+    }
 }

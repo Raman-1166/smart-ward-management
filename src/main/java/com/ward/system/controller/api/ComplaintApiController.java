@@ -26,7 +26,7 @@ public class ComplaintApiController {
 
     @GetMapping
     public List<Complaint> getAllComplaints() {
-        return complaintService.getAllComplaints();
+        return complaintService.getAllComplaintsList();
     }
 
     @GetMapping("/my")

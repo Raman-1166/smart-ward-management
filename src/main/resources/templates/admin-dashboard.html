@@ -134,10 +134,10 @@
                 new Chart(ctx, {
                     type: 'bar',
                     data: {
-                        labels: Object.keys(data.wardAverageRatings),
+                        labels: data.complaintsPerWard.map(item => item.wardName),
                         datasets: [{
-                            label: 'Avg Cleanliness Rating (out of 100)',
-                            data: Object.values(data.wardAverageRatings),
+                            label: 'Number of Complaints',
+                            data: data.complaintsPerWard.map(item => item.count),
                             backgroundColor: 'rgba(46, 204, 113, 0.6)',
                             borderColor: 'rgba(46, 204, 113, 1)',
                             borderWidth: 1
@@ -145,8 +145,19 @@
                     },
                     options: {
                         responsive: true,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top'
+                            }
+                        },
                         scales: {
-                            y: { beginAtZero: true, max: 100 }
+                            y: { 
+                                beginAtZero: true,
+                                ticks: {
+                                    stepSize: 1
+                                }
+                            }
                         }
                     }
                 });

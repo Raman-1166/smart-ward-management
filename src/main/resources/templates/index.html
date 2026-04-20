@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{layout :: head('Home')}"></head>
+<head th:replace="~{fragments/layout :: header('Home')}"></head>
 <body>
-    <header th:replace="~{layout :: navbar}"></header>
+    <nav th:replace="~{fragments/layout :: navbar('home')}"></nav>
 
     <main class="container">
         <div class="text-center" style="padding: 5rem 0;">

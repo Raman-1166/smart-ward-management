@@ -27,7 +27,7 @@ public class AuthController {
     @GetMapping("/register")
     public String registerForm(Model model) {
         model.addAttribute("user", new User());
-        model.addAttribute("wards", wardService.getAllWards());
+        model.addAttribute("wards", wardService.getAllWardsList());
         return "register";
     }
 

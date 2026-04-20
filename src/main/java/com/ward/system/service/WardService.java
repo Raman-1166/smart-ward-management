@@ -3,6 +3,8 @@ package com.ward.system.service;
 import com.ward.system.model.Ward;
 import com.ward.system.repository.WardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,7 +15,11 @@ public class WardService {
     @Autowired
     private WardRepository wardRepository;
 
-    public List<Ward> getAllWards() {
+    public Page<Ward> getAllWards(Pageable pageable) {
+        return wardRepository.findAll(pageable);
+    }
+
+    public List<Ward> getAllWardsList() {
         return wardRepository.findAll();
     }
 

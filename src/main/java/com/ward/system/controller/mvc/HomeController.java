@@ -23,10 +23,9 @@ public class HomeController {
     @GetMapping({"/", "/home"})
     public String home(Model model) {
         model.addAttribute("wards", wardService.getWardRanking());
-        model.addAttribute("totalWards", wardService.getAllWards().size());
-        model.addAttribute("totalComplaints", complaintService.getAllComplaints().size());
-        // Simple placeholder for total feedback count (could add a generic service method)
-        model.addAttribute("totalFeedback", 15); // Mocked or calculated
+        model.addAttribute("totalWards", wardService.getAllWardsList().size());
+        model.addAttribute("totalComplaints", complaintService.getAllComplaintsList().size());
+        model.addAttribute("totalFeedback", feedbackService.getAllFeedback().size());
         return "home";
     }
 }

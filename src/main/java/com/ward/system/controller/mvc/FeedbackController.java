@@ -23,7 +23,7 @@ public class FeedbackController {
     @GetMapping("/new")
     public String feedbackForm(Model model) {
         model.addAttribute("feedback", new Feedback());
-        model.addAttribute("wards", wardService.getAllWards());
+        model.addAttribute("wards", wardService.getAllWardsList());
         return "feedback-form";
     }
 

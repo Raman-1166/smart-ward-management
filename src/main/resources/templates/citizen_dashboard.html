@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{layout :: head('My Dashboard')}"></head>
+<head th:replace="~{fragments/layout :: header('My Dashboard')}"></head>
 <body>
-    <header th:replace="~{layout :: navbar}"></header>
+    <nav th:replace="~{fragments/layout :: navbar('home')}"></nav>
 
     <main class="container">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">

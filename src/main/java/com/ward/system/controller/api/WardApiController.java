@@ -26,7 +26,7 @@ public class WardApiController {
 
     @GetMapping
     public List<Ward> getAllWards() {
-        return wardService.getAllWards();
+        return wardService.getAllWardsList();
     }
 
     @GetMapping("/{id}")
