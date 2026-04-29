@@ -43,6 +43,19 @@
         .rating-stars i {
             color: #f1c40f;
         }
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            background-color: var(--primary-green);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
     </style>
 </head>
 <body>
@@ -81,10 +94,14 @@
                     <a class="btn btn-primary" href="/register">Register</a>
                 </li>
                 <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
-                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                        <i class="bi bi-person-circle"></i> <span sec:authentication="name">User</span>
+                    <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                        <div class="user-avatar" th:text="${#strings.substring(#authentication.name, 0, 1).toUpperCase()}">U</div>
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end">
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 mt-2">
+                        <li class="px-3 py-2 text-muted small border-bottom mb-2">
+                            Logged in as: <br>
+                            <span class="fw-bold text-dark" sec:authentication="name">user@email.com</span>
+                        </li>
                         <li><a class="dropdown-item" href="/complaint/my">My Complaints</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li>

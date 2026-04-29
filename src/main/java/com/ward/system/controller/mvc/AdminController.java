@@ -110,15 +110,40 @@ public class AdminController {
         return "redirect:/admin/wards/" + wardId + "/services";
     }
 
+    // Global Service List
+    @GetMapping("/services")
+    public String listAllServices(Model model) {
+        model.addAttribute("services", serviceDirectoryService.getAllServices());
+        return "admin/service-list-all";
+    }
+
+    // Citizen/User Management
+    @GetMapping("/users")
+    public String listUsers(Model model) {
+        model.addAttribute("users", userService.getAllUsers());
+        return "admin/user-list";
+    }
+
     @GetMapping("/complaints")
-    public String adminComplaints(@RequestParam(defaultValue = "0") int page, Model model) {
-        model.addAttribute("complaintsPage", complaintService.getAllComplaints(PageRequest.of(page, 10)));
+    public String adminComplaints(@RequestParam(defaultValue = "0") int page, 
+                                 @RequestParam(required = false) Status status,
+                                 Model model) {
+        if (status != null) {
+            model.addAttribute("complaintsPage", complaintService.getComplaintsByStatus(status, PageRequest.of(page, 10)));
+            model.addAttribute("currentStatus", status);
+        } else {
+            model.addAttribute("complaintsPage", complaintService.getAllComplaints(PageRequest.of(page, 10)));
+        }
         return "admin-complaints";
     }
 
     @PostMapping("/complaints/{id}/status")
-    public String updateComplaintStatus(@PathVariable Long id, @RequestParam Status status) {
+    public String updateComplaintStatus(@PathVariable Long id, @RequestParam Status status, jakarta.servlet.http.HttpServletRequest request) {
         complaintService.updateStatus(id, status);
+        String referer = request.getHeader("Referer");
+        if (referer != null) {
+            return "redirect:" + referer;
+        }
         return "redirect:/admin/complaints";
     }
 }

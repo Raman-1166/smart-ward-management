@@ -29,6 +29,10 @@ public class ComplaintService {
         return complaintRepository.findAll(pageable);
     }
 
+    public Page<Complaint> getComplaintsByStatus(Status status, Pageable pageable) {
+        return complaintRepository.findByStatus(status, pageable);
+    }
+
     public List<Complaint> getAllComplaintsList() {
         return complaintRepository.findAll();
     }

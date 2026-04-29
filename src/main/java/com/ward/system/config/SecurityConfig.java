@@ -28,9 +28,9 @@ public class SecurityConfig {
                 .ignoringRequestMatchers("/api/**") // Disable CSRF for API endpoints
             )
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/home", "/register", "/login", "/wards/**", "/api/public/**", "/css/**", "/js/**", "/images/**", "/error", "/actuator/health").permitAll()
+                .requestMatchers("/", "/home", "/register", "/login", "/wards", "/api/public/**", "/css/**", "/js/**", "/images/**", "/error", "/actuator/health").permitAll()
                 .requestMatchers("/admin/**", "/api/admin/**").hasRole("ADMIN")
-                .requestMatchers("/complaint/**", "/feedback/**", "/api/complaints/**", "/api/feedback/**").authenticated()
+                .requestMatchers("/wards/**", "/complaint/**", "/feedback/**", "/api/complaints/**", "/api/feedback/**").authenticated()
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form

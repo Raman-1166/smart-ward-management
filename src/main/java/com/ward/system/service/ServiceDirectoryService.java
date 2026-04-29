@@ -14,6 +14,10 @@ public class ServiceDirectoryService {
     @Autowired
     private ServiceRepository serviceRepository;
 
+    public List<ServiceEntity> getAllServices() {
+        return serviceRepository.findAll();
+    }
+
     public List<ServiceEntity> getServicesByWard(Long wardId) {
         return serviceRepository.findByWardId(wardId);
     }

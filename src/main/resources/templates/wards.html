@@ -49,7 +49,8 @@
                             </div>
                         </div>
                         
-                        <a th:href="@{/wards/{id}(id=${ward.id})}" class="btn btn-outline-success w-100 rounded-pill fw-bold">View Full Details</a>
+                        <a sec:authorize="isAuthenticated()" th:href="@{/wards/{id}(id=${ward.id})}" class="btn btn-outline-success w-100 rounded-pill fw-bold">View Full Details</a>
+                        <a sec:authorize="isAnonymous()" href="/login" class="btn btn-outline-secondary w-100 rounded-pill fw-bold">Login to View Details</a>
                     </div>
                 </div>
             </div>

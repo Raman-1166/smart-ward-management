@@ -45,16 +45,19 @@ public class AdminAnalyticsApiController {
         analytics.put("resolvedComplaints", allComplaints.stream().filter(c -> c.getStatus() == Status.RESOLVED).count());
         analytics.put("totalFeedback", feedbackService.getAllFeedback().size());
 
-        // Complaints per Ward
+        // Complaints per Ward (only wards with complaints)
         List<Map<String, Object>> complaintsPerWard = new ArrayList<>();
         Map<Long, Long> complaintCounts = allComplaints.stream()
                 .collect(Collectors.groupingBy(c -> c.getWard().getId(), Collectors.counting()));
         
         for (Ward ward : wards) {
-            Map<String, Object> entry = new HashMap<>();
-            entry.put("wardName", ward.getName());
-            entry.put("count", complaintCounts.getOrDefault(ward.getId(), 0L));
-            complaintsPerWard.add(entry);
+            Long count = complaintCounts.getOrDefault(ward.getId(), 0L);
+            if (count > 0) {
+                Map<String, Object> entry = new HashMap<>();
+                entry.put("wardName", ward.getName());
+                entry.put("count", count);
+                complaintsPerWard.add(entry);
+            }
         }
         analytics.put("complaintsPerWard", complaintsPerWard);
 

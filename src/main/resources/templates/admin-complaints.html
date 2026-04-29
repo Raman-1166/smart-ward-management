@@ -12,10 +12,10 @@
             </div>
             <div class="col-md-6 text-md-end">
                 <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-outline-secondary active">All</button>
-                    <button type="button" class="btn btn-outline-warning">Pending</button>
-                    <button type="button" class="btn btn-outline-info text-dark">In Progress</button>
-                    <button type="button" class="btn btn-outline-success">Resolved</button>
+                    <a href="/admin/complaints" class="btn btn-outline-secondary" th:classappend="${currentStatus == null ? 'active' : ''}">All</a>
+                    <a href="/admin/complaints?status=PENDING" class="btn btn-outline-warning" th:classappend="${currentStatus != null and currentStatus.name() == 'PENDING' ? 'active' : ''}">Pending</a>
+                    <a href="/admin/complaints?status=IN_PROGRESS" class="btn btn-outline-info text-dark" th:classappend="${currentStatus != null and currentStatus.name() == 'IN_PROGRESS' ? 'active' : ''}">In Progress</a>
+                    <a href="/admin/complaints?status=RESOLVED" class="btn btn-outline-success" th:classappend="${currentStatus != null and currentStatus.name() == 'RESOLVED' ? 'active' : ''}">Resolved</a>
                 </div>
             </div>
         </div>
@@ -55,16 +55,24 @@
                             </td>
                             <td class="small text-muted" th:text="${#temporals.format(c.updatedAt != null ? c.updatedAt : c.createdAt, 'dd MMM HH:mm')}">Time</td>
                             <td class="pe-4">
-                                <form th:action="@{/admin/complaints/{id}/status(id=${c.id})}" method="post">
-                                    <div class="input-group input-group-sm" style="width: 200px;">
-                                        <select name="status" class="form-select border-success">
-                                            <option value="PENDING" th:selected="${c.status.name() == 'PENDING'}">Pending</option>
-                                            <option value="IN_PROGRESS" th:selected="${c.status.name() == 'IN_PROGRESS'}">In Progress</option>
-                                            <option value="RESOLVED" th:selected="${c.status.name() == 'RESOLVED'}">Resolved</option>
-                                        </select>
-                                        <button class="btn btn-success border-success" type="submit">Update</button>
-                                    </div>
-                                </form>
+                                <div class="d-flex align-items-center">
+                                    <form th:action="@{/admin/complaints/{id}/status(id=${c.id})}" method="post" class="me-2">
+                                        <div class="input-group input-group-sm" style="width: 200px;">
+                                            <select name="status" class="form-select border-success">
+                                                <option value="PENDING" th:selected="${c.status.name() == 'PENDING'}">Pending</option>
+                                                <option value="IN_PROGRESS" th:selected="${c.status.name() == 'IN_PROGRESS'}">In Progress</option>
+                                                <option value="RESOLVED" th:selected="${c.status.name() == 'RESOLVED'}">Resolved</option>
+                                            </select>
+                                            <button class="btn btn-success border-success" type="submit">Update</button>
+                                        </div>
+                                    </form>
+                                    <form th:if="${c.status.name() != 'RESOLVED'}" th:action="@{/admin/complaints/{id}/status(id=${c.id})}" method="post">
+                                        <input type="hidden" name="status" value="RESOLVED">
+                                        <button class="btn btn-sm btn-success rounded-pill px-3 fw-bold" type="submit">
+                                            <i class="bi bi-check-lg me-1"></i> Resolve
+                                        </button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                     </tbody>
@@ -75,13 +83,13 @@
                 <nav aria-label="Page navigation">
                     <ul class="pagination justify-content-center mb-0">
                         <li class="page-item" th:classappend="${!complaintsPage.hasPrevious() ? 'disabled' : ''}">
-                            <a class="page-link" th:href="@{/admin/complaints(page=${complaintsPage.number - 1})}" tabindex="-1">Previous</a>
+                            <a class="page-link" th:href="@{/admin/complaints(page=${complaintsPage.number - 1}, status=${currentStatus})}" tabindex="-1">Previous</a>
                         </li>
                         <li class="page-item disabled">
                             <span class="page-link" th:text="'Page ' + (${complaintsPage.number} + 1) + ' of ' + ${complaintsPage.totalPages}">Page 1 of 1</span>
                         </li>
                         <li class="page-item" th:classappend="${!complaintsPage.hasNext() ? 'disabled' : ''}">
-                            <a class="page-link" th:href="@{/admin/complaints(page=${complaintsPage.number + 1})}">Next</a>
+                            <a class="page-link" th:href="@{/admin/complaints(page=${complaintsPage.number + 1}, status=${currentStatus})}">Next</a>
                         </li>
                     </ul>
                 </nav>

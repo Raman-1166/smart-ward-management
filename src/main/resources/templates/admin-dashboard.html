@@ -10,41 +10,50 @@
         <!-- Stats Cards -->
         <div class="row g-4 mb-5">
             <div class="col-md-3">
-                <div class="card h-100 shadow-sm border-0 rounded-4 text-center p-3">
-                    <div class="card-body">
-                        <i class="bi bi-people-fill text-primary display-4 mb-3"></i>
-                        <h3 class="fw-bold" th:text="${totalUsers}">10</h3>
-                        <p class="text-muted mb-0">Registered Citizens</p>
+                <a href="/admin/users" class="text-decoration-none h-100">
+                    <div class="card h-100 shadow-sm border-0 rounded-4 text-center p-3 hover-shadow transition">
+                        <div class="card-body">
+                            <i class="bi bi-people-fill text-primary display-4 mb-3"></i>
+                            <h3 class="fw-bold" th:text="${totalUsers}">10</h3>
+                            <p class="text-muted mb-0">Registered Citizens</p>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
             <div class="col-md-3">
-                <div class="card h-100 shadow-sm border-0 rounded-4 text-center p-3">
-                    <div class="card-body">
-                        <i class="bi bi-file-earmark-text text-secondary display-4 mb-3"></i>
-                        <h3 class="fw-bold" th:text="${totalComplaints}">0</h3>
-                        <p class="text-muted mb-0">Total Complaints</p>
+                <a href="/admin/complaints" class="text-decoration-none h-100">
+                    <div class="card h-100 shadow-sm border-0 rounded-4 text-center p-3 hover-shadow transition">
+                        <div class="card-body">
+                            <i class="bi bi-file-earmark-text text-secondary display-4 mb-3"></i>
+                            <h3 class="fw-bold" th:text="${totalComplaints}">0</h3>
+                            <p class="text-muted mb-0">Total Complaints</p>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
             <div class="col-md-3">
-                <div class="card h-100 shadow-sm border-0 rounded-4 text-center p-3">
-                    <div class="card-body">
-                        <i class="bi bi-hourglass-split text-warning display-4 mb-3"></i>
-                        <h3 class="fw-bold" th:text="${pendingComplaints}">0</h3>
-                        <p class="text-muted mb-0">Pending Issues</p>
+                <a href="/admin/complaints?status=PENDING" class="text-decoration-none h-100">
+                    <div class="card h-100 shadow-sm border-0 rounded-4 text-center p-3 hover-shadow transition">
+                        <div class="card-body">
+                            <i class="bi bi-hourglass-split text-warning display-4 mb-3"></i>
+                            <h3 class="fw-bold" th:text="${pendingComplaints}">0</h3>
+                            <p class="text-muted mb-0">Pending Issues</p>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
             <div class="col-md-3">
-                <div class="card h-100 shadow-sm border-0 rounded-4 text-center p-3">
-                    <div class="card-body">
-                        <i class="bi bi-check2-circle text-success display-4 mb-3"></i>
-                        <h3 class="fw-bold" th:text="${resolvedComplaints}">0</h3>
-                        <p class="text-muted mb-0">Issues Resolved</p>
+                <a href="/admin/complaints?status=RESOLVED" class="text-decoration-none h-100">
+                    <div class="card h-100 shadow-sm border-0 rounded-4 text-center p-3 hover-shadow transition">
+                        <div class="card-body">
+                            <i class="bi bi-check2-circle text-success display-4 mb-3"></i>
+                            <h3 class="fw-bold" th:text="${resolvedComplaints}">0</h3>
+                            <p class="text-muted mb-0">Issues Resolved</p>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
+        </div>
         <!-- Management Cards -->
         <div class="row g-4 mb-5">
             <div class="col-md-6">
@@ -70,7 +79,7 @@
                         <div>
                             <h3 class="fw-bold mb-1">Service Directory</h3>
                             <p class="text-muted mb-3">Manage hospitals, banks, and schools across all wards.</p>
-                            <a href="/admin/wards" class="btn btn-primary rounded-pill px-4 fw-bold">Manage Services</a>
+                            <a href="/admin/services" class="btn btn-primary rounded-pill px-4 fw-bold">Manage Services</a>
                         </div>
                     </div>
                 </div>
@@ -106,16 +115,24 @@
                                           th:text="${c.status}">STATUS</span>
                                 </div>
                                 <p class="text-muted small text-truncate mb-2" th:text="${c.description}">Description...</p>
-                                <form th:action="@{/admin/complaints/{id}/status(id=${c.id})}" method="post">
-                                    <div class="input-group input-group-sm">
-                                        <select name="status" class="form-select">
-                                            <option value="PENDING" th:selected="${c.status.name() == 'PENDING'}">Pending</option>
-                                            <option value="IN_PROGRESS" th:selected="${c.status.name() == 'IN_PROGRESS'}">In Progress</option>
-                                            <option value="RESOLVED" th:selected="${c.status.name() == 'RESOLVED'}">Resolved</option>
-                                        </select>
-                                        <button class="btn btn-outline-success" type="submit">Save</button>
-                                    </div>
-                                </form>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <form th:action="@{/admin/complaints/{id}/status(id=${c.id})}" method="post" class="flex-grow-1 me-2">
+                                        <div class="input-group input-group-sm">
+                                            <select name="status" class="form-select">
+                                                <option value="PENDING" th:selected="${c.status.name() == 'PENDING'}">Pending</option>
+                                                <option value="IN_PROGRESS" th:selected="${c.status.name() == 'IN_PROGRESS'}">In Progress</option>
+                                                <option value="RESOLVED" th:selected="${c.status.name() == 'RESOLVED'}">Resolved</option>
+                                            </select>
+                                            <button class="btn btn-outline-success" type="submit">Save</button>
+                                        </div>
+                                    </form>
+                                    <form th:if="${c.status.name() != 'RESOLVED'}" th:action="@{/admin/complaints/{id}/status(id=${c.id})}" method="post">
+                                        <input type="hidden" name="status" value="RESOLVED">
+                                        <button class="btn btn-sm btn-success rounded-pill px-3" type="submit" title="Mark as Resolved">
+                                            <i class="bi bi-check-lg"></i>
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
