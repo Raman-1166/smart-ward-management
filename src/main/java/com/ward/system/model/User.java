@@ -1,16 +1,17 @@
 package com.ward.system.model;
 
 import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "users")
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class User {
 
     @Id
@@ -18,23 +19,32 @@ public class User {
     private Long id;
 
     @Column(nullable = false)
-    private String name;
+    private String fullName;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
+
+    @Column(nullable = false, length = 10)
+    private String mobile;
+
+    // Security: Only store last 4 digits of Aadhaar
+    @Column(nullable = false, length = 4)
+    private String aadhaarLast4;
+
+    // Security: Hashed version of full Aadhaar for verification if needed
+    @Column(nullable = false)
+    private String aadhaarHash;
+
+    // Security: Tokenized/Masked Card details
+    @Column(nullable = false, length = 4)
+    private String cardLast4;
+
+    @Column(nullable = false)
+    private String cardExpiry;
 
     @Column(nullable = false)
     private String password;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private Role role;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ward_id")
-    private Ward ward;
-
-    @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
 }
