@@ -24,24 +24,6 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false, length = 10)
-    private String mobile;
-
-    // Security: Only store last 4 digits of Aadhaar
-    @Column(nullable = false, length = 4)
-    private String aadhaarLast4;
-
-    // Security: Hashed version of full Aadhaar for verification if needed
-    @Column(nullable = false)
-    private String aadhaarHash;
-
-    // Security: Tokenized/Masked Card details
-    @Column(nullable = false, length = 4)
-    private String cardLast4;
-
-    @Column(nullable = false)
-    private String cardExpiry;
-
     @Column(nullable = false)
     private String password;
 
