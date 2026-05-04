@@ -1,4 +1,28 @@
-# Smart Ward Management System V2
+# Smart Ward Management
+
+## Quick Start
+
+1. Clone the repository.
+2. Set the required environment variables (Render, Docker, local dev):
+   - `SPRING_DATASOURCE_URL` – JDBC URL of your MySQL database (must start with `jdbc:mysql://`).
+   - `SPRING_DATASOURCE_USERNAME` – Database username (e.g., `avnadmin`).
+   - `SPRING_DATASOURCE_PASSWORD` – Database password.
+   - `PORT` – Optional, defaults to 8080.
+
+   Example for an Aiven MySQL instance:
+   ```
+   SPRING_DATASOURCE_URL=jdbc:mysql://mysql-976f573-ramanchourasiya2005-59b4.g.aivencloud.com:16014/defaultdb?sslMode=REQUIRED
+   SPRING_DATASOURCE_USERNAME=avnadmin
+   SPRING_DATASOURCE_PASSWORD=YOUR_AIVEN_PASSWORD
+   ```
+
+3. Build and run:
+   ```
+   ./mvnw clean package -DskipTests
+   java -jar target/smart-ward-management-1.0.jar
+   ```
+
+The rest of the README remains unchanged. System V2
 
 A comprehensive, production-ready administrative and citizen platform for urban ward management. Inspired by the **Swachh Survekshan** initiative, this system streamlines the interaction between citizens and local authorities to maintain and improve ward infrastructure.
 
