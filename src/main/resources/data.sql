@@ -1,14 +1,14 @@
--- Ensure DB ENUM supports new Categories
-ALTER TABLE services MODIFY COLUMN category ENUM('HOSPITAL', 'GYM', 'MEDICAL_STORE', 'BANK', 'ELECTRICITY', 'WARD_OFFICE', 'SCHOOL', 'GARBAGE', 'DRAINAGE', 'SANITATION', 'OTHER') NOT NULL;
-
--- Ensure clean table recreation if re-init
-SET FOREIGN_KEY_CHECKS = 0;
-TRUNCATE TABLE feedback;
-TRUNCATE TABLE complaints;
-TRUNCATE TABLE services;
-TRUNCATE TABLE users;
-TRUNCATE TABLE wards;
-SET FOREIGN_KEY_CHECKS = 1;
+-- -- Ensure DB ENUM supports new Categories
+-- ALTER TABLE services MODIFY COLUMN category ENUM('HOSPITAL', 'GYM', 'MEDICAL_STORE', 'BANK', 'ELECTRICITY', 'WARD_OFFICE', 'SCHOOL', 'GARBAGE', 'DRAINAGE', 'SANITATION', 'OTHER') NOT NULL;
+-- 
+-- -- Ensure clean table recreation if re-init
+-- SET FOREIGN_KEY_CHECKS = 0;
+-- TRUNCATE TABLE feedback;
+-- TRUNCATE TABLE complaints;
+-- TRUNCATE TABLE services;
+-- TRUNCATE TABLE users;
+-- TRUNCATE TABLE wards;
+-- SET FOREIGN_KEY_CHECKS = 1;
 
 -- Wards
 INSERT INTO wards (id, name, area, population, officer_name, cleanliness_score) VALUES
