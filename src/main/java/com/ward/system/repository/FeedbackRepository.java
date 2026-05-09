@@ -11,6 +11,8 @@ import java.util.List;
 @Repository
 public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
     List<Feedback> findByWardId(Long wardId);
+    List<Feedback> findByUserId(Long userId);
+    long countByWardId(Long wardId);
 
     @Query("SELECT AVG(f.rating) FROM Feedback f WHERE f.ward.id = :wardId")
     Double findAverageRatingByWardId(@Param("wardId") Long wardId);

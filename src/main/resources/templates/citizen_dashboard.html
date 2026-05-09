@@ -7,10 +7,10 @@
     <main class="container">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
             <div>
-                <h2 th:text="'Welcome, ' + ${user.fullName}"></h2>
+                <h2 th:text="'Welcome, ' + ${user.name}"></h2>
                 <p class="text-muted">Track your reported issues and ward status.</p>
             </div>
-            <a href="/complaint" class="btn btn-primary">+ File New Complaint</a>
+            <a href="/complaint/new" class="btn btn-primary">+ File New Complaint</a>
         </div>
 
         <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
@@ -19,14 +19,14 @@
             <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
                 <h3 style="margin: 0;">My Reported Complaints</h3>
             </div>
-            
+
             <div class="table-responsive">
                 <table>
                     <thead>
                         <tr>
                             <th>ID</th>
                             <th>Category</th>
-                            <th>Issue</th>
+                            <th>Description</th>
                             <th>Ward</th>
                             <th>Date Filed</th>
                             <th>Status</th>
@@ -35,23 +35,23 @@
                     <tbody>
                         <tr th:each="complaint : ${complaints}">
                             <td th:text="'#' + ${complaint.id}"></td>
-                            <td th:text="${complaint.type}"></td>
-                            <td th:text="${complaint.title}"></td>
-                            <td th:text="'Ward ' + ${complaint.ward.wardNumber}"></td>
+                            <td th:text="${complaint.category}"></td>
+                            <td th:text="${#strings.abbreviate(complaint.description, 60)}"></td>
+                            <td th:text="${complaint.ward.name}"></td>
                             <td th:text="${#temporals.format(complaint.createdAt, 'dd MMM yyyy, HH:mm')}"></td>
                             <td>
-                                <span th:class="'badge ' + 
-                                    (${complaint.status == 'PENDING'} ? 'badge-pending' : 
-                                    (${complaint.status == 'IN_PROGRESS'} ? 'badge-progress' : 'badge-resolved'))"
+                                <span th:class="'badge ' +
+                                    (${complaint.status.name() == 'PENDING'} ? 'badge-pending' :
+                                    (${complaint.status.name() == 'IN_PROGRESS'} ? 'badge-progress' : 'badge-resolved'))"
                                     th:text="${complaint.status}">
                                 </span>
                             </td>
                         </tr>
                         <tr th:if="${#lists.isEmpty(complaints)}">
                             <td colspan="6" class="text-center" style="padding: 3rem; color: var(--text-muted);">
-                                You haven't filed any complaints yet. 
+                                You haven't filed any complaints yet.
                                 <br><br>
-                                <a href="/complaint" class="btn btn-outline">Ship your first report</a>
+                                <a href="/complaint/new" class="btn btn-outline">File your first report</a>
                             </td>
                         </tr>
                     </tbody>

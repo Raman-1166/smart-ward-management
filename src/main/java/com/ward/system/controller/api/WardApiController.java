@@ -7,6 +7,7 @@ import com.ward.system.service.FeedbackService;
 import com.ward.system.service.ServiceDirectoryService;
 import com.ward.system.service.WardService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,13 +30,20 @@ public class WardApiController {
         return wardService.getAllWardsList();
     }
 
+    @GetMapping("/ranking")
+    public List<Ward> getWardRanking() {
+        return wardService.getWardRanking();
+    }
+
     @GetMapping("/{id}")
-    public Ward getWardById(@PathVariable Long id) {
-        return wardService.getWardById(id);
+    public ResponseEntity<Ward> getWardById(@PathVariable Long id) {
+        // getWardById throws ResourceNotFoundException (→ 404) if not found
+        return ResponseEntity.ok(wardService.getWardById(id));
     }
 
     @GetMapping("/{id}/services")
-    public List<ServiceEntity> getWardServices(@PathVariable Long id, @RequestParam(required = false) Category category) {
+    public List<ServiceEntity> getWardServices(@PathVariable Long id,
+                                               @RequestParam(required = false) Category category) {
         if (category != null) {
             return serviceDirectoryService.getServicesByWardAndCategory(id, category);
         }
@@ -48,7 +56,7 @@ public class WardApiController {
     }
 
     @GetMapping("/{id}/rating")
-    public Double getWardRating(@PathVariable Long id) {
-        return feedbackService.getAverageRatingForWard(id);
+    public ResponseEntity<Double> getWardRating(@PathVariable Long id) {
+        return ResponseEntity.ok(feedbackService.getAverageRatingForWard(id));
     }
 }

@@ -1,9 +1,14 @@
 package com.ward.system.controller.mvc;
 
+import com.ward.system.model.Category;
+import com.ward.system.model.ServiceEntity;
 import com.ward.system.model.Status;
+import com.ward.system.model.Ward;
 import com.ward.system.service.ComplaintService;
+import com.ward.system.service.ServiceDirectoryService;
 import com.ward.system.service.UserService;
 import com.ward.system.service.WardService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
@@ -24,7 +29,9 @@ public class AdminController {
     private UserService userService;
 
     @Autowired
-    private com.ward.system.service.ServiceDirectoryService serviceDirectoryService;
+    private ServiceDirectoryService serviceDirectoryService;
+
+    // ─── Dashboard ────────────────────────────────────────────────────────────
 
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
@@ -36,7 +43,8 @@ public class AdminController {
         return "admin-dashboard";
     }
 
-    // Ward Management
+    // ─── Ward Management ──────────────────────────────────────────────────────
+
     @GetMapping("/wards")
     public String listWards(Model model) {
         model.addAttribute("wards", wardService.getAllWardsList());
@@ -45,105 +53,115 @@ public class AdminController {
 
     @GetMapping("/wards/new")
     public String wardForm(Model model) {
-        model.addAttribute("ward", new com.ward.system.model.Ward());
+        model.addAttribute("ward", new Ward());
         return "admin/ward-form";
     }
 
     @GetMapping("/wards/edit/{id}")
     public String editWard(@PathVariable Long id, Model model) {
-        com.ward.system.model.Ward ward = wardService.getWardById(id);
-        if (ward == null) {
-            return "redirect:/admin/wards?error=WardNotFound";
-        }
-        model.addAttribute("ward", ward);
+        model.addAttribute("ward", wardService.getWardById(id));
         return "admin/ward-form";
     }
 
     @PostMapping("/wards/save")
-    public String saveWard(@ModelAttribute com.ward.system.model.Ward ward) {
+    public String saveWard(@ModelAttribute Ward ward) {
         wardService.saveWard(ward);
         return "redirect:/admin/wards";
     }
 
-    @GetMapping("/wards/delete/{id}")
+    /** DELETE via POST form — avoids CSRF-vulnerable GET-based deletion */
+    @PostMapping("/wards/delete/{id}")
     public String deleteWard(@PathVariable Long id) {
         wardService.deleteWard(id);
         return "redirect:/admin/wards";
     }
 
-    // Service Management for a Ward
+    // ─── Service Management ───────────────────────────────────────────────────
+
     @GetMapping("/wards/{wardId}/services")
     public String listServices(@PathVariable Long wardId, Model model) {
-        com.ward.system.model.Ward ward = wardService.getWardById(wardId);
-        if (ward == null) {
-            return "redirect:/admin/wards?error=WardNotFound";
-        }
-        model.addAttribute("ward", ward);
+        model.addAttribute("ward", wardService.getWardById(wardId));
         model.addAttribute("services", serviceDirectoryService.getServicesByWard(wardId));
         return "admin/service-list";
     }
 
     @GetMapping("/wards/{wardId}/services/new")
     public String serviceForm(@PathVariable Long wardId, Model model) {
-        com.ward.system.model.Ward ward = wardService.getWardById(wardId);
-        if (ward == null) {
-            return "redirect:/admin/wards?error=WardNotFound";
-        }
-        com.ward.system.model.ServiceEntity service = new com.ward.system.model.ServiceEntity();
+        Ward ward = wardService.getWardById(wardId);
+        ServiceEntity service = new ServiceEntity();
         service.setWard(ward);
         model.addAttribute("service", service);
         model.addAttribute("wardId", wardId);
-        model.addAttribute("categories", com.ward.system.model.Category.values());
+        model.addAttribute("categories", Category.values());
+        return "admin/service-form";
+    }
+
+    @GetMapping("/wards/{wardId}/services/edit/{serviceId}")
+    public String editService(@PathVariable Long wardId, @PathVariable Long serviceId, Model model) {
+        model.addAttribute("service", serviceDirectoryService.getServiceById(serviceId));
+        model.addAttribute("wardId", wardId);
+        model.addAttribute("categories", Category.values());
         return "admin/service-form";
     }
 
     @PostMapping("/wards/{wardId}/services/save")
-    public String saveService(@PathVariable Long wardId, @ModelAttribute com.ward.system.model.ServiceEntity service) {
+    public String saveService(@PathVariable Long wardId, @ModelAttribute ServiceEntity service) {
         service.setWard(wardService.getWardById(wardId));
         serviceDirectoryService.saveService(service);
         return "redirect:/admin/wards/" + wardId + "/services";
     }
 
-    @GetMapping("/wards/{wardId}/services/delete/{serviceId}")
+    /** DELETE via POST form — avoids CSRF-vulnerable GET-based deletion */
+    @PostMapping("/wards/{wardId}/services/delete/{serviceId}")
     public String deleteService(@PathVariable Long wardId, @PathVariable Long serviceId) {
         serviceDirectoryService.deleteService(serviceId);
         return "redirect:/admin/wards/" + wardId + "/services";
     }
 
-    // Global Service List
+    // ─── Global Service List ──────────────────────────────────────────────────
+
     @GetMapping("/services")
     public String listAllServices(Model model) {
         model.addAttribute("services", serviceDirectoryService.getAllServices());
         return "admin/service-list-all";
     }
 
-    // Citizen/User Management
+    // ─── User Management ──────────────────────────────────────────────────────
+
     @GetMapping("/users")
     public String listUsers(Model model) {
         model.addAttribute("users", userService.getAllUsers());
         return "admin/user-list";
     }
 
+    @PostMapping("/users/delete/{id}")
+    public String deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return "redirect:/admin/users";
+    }
+
+    // ─── Complaint Management ─────────────────────────────────────────────────
+
     @GetMapping("/complaints")
-    public String adminComplaints(@RequestParam(defaultValue = "0") int page, 
-                                 @RequestParam(required = false) Status status,
-                                 Model model) {
+    public String adminComplaints(@RequestParam(defaultValue = "0") int page,
+                                  @RequestParam(required = false) Status status,
+                                  Model model) {
         if (status != null) {
             model.addAttribute("complaintsPage", complaintService.getComplaintsByStatus(status, PageRequest.of(page, 10)));
             model.addAttribute("currentStatus", status);
         } else {
             model.addAttribute("complaintsPage", complaintService.getAllComplaints(PageRequest.of(page, 10)));
         }
+        model.addAttribute("statuses", Status.values());
         return "admin-complaints";
     }
 
     @PostMapping("/complaints/{id}/status")
-    public String updateComplaintStatus(@PathVariable Long id, @RequestParam Status status, jakarta.servlet.http.HttpServletRequest request) {
+    public String updateComplaintStatus(@PathVariable Long id,
+                                        @RequestParam Status status,
+                                        HttpServletRequest request) {
         complaintService.updateStatus(id, status);
         String referer = request.getHeader("Referer");
-        if (referer != null) {
-            return "redirect:" + referer;
-        }
-        return "redirect:/admin/complaints";
+        return referer != null ? "redirect:" + referer : "redirect:/admin/complaints";
     }
 }

@@ -40,11 +40,18 @@
                                 <td class="small text-muted" th:text="${s.address}">Address</td>
                                 <td class="small fw-medium" th:text="${s.openingTime} + ' - ' + ${s.closingTime}">09:00 - 18:00</td>
                                 <td class="text-end pe-4">
-                                    <a th:href="@{/admin/wards/{wid}/services/delete/{sid}(wid=${ward.id}, sid=${s.id})}" 
-                                       class="btn btn-sm btn-outline-danger shadow-sm rounded-pill px-3" 
-                                       onclick="return confirm('Are you sure you want to remove this facility?')">
-                                        Remove
+                                    <a th:href="@{/admin/wards/{wid}/services/edit/{sid}(wid=${ward.id}, sid=${s.id})}"
+                                       class="btn btn-sm btn-outline-dark shadow-sm rounded-pill px-3 me-1">
+                                        Edit
                                     </a>
+                                    <!-- POST form for delete — avoids CSRF-vulnerable GET deletion -->
+                                    <form th:action="@{/admin/wards/{wid}/services/delete/{sid}(wid=${ward.id}, sid=${s.id})}"
+                                          method="post" class="d-inline"
+                                          onsubmit="return confirm('Are you sure you want to remove this facility?')">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger shadow-sm rounded-pill px-3">
+                                            Remove
+                                        </button>
+                                    </form>
                                 </td>
                             </tr>
                             <tr th:if="${#lists.isEmpty(services)}">

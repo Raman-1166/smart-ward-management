@@ -1,10 +1,12 @@
 package com.ward.system.service;
 
+import com.ward.system.exception.ResourceNotFoundException;
 import com.ward.system.model.Category;
 import com.ward.system.model.ServiceEntity;
 import com.ward.system.repository.ServiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -26,15 +28,21 @@ public class ServiceDirectoryService {
         return serviceRepository.findByWardIdAndCategory(wardId, category);
     }
 
+    @Transactional
     public ServiceEntity saveService(ServiceEntity serviceEntity) {
         return serviceRepository.save(serviceEntity);
     }
 
     public ServiceEntity getServiceById(Long id) {
-        return serviceRepository.findById(id).orElse(null);
+        return serviceRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Service", id));
     }
 
+    @Transactional
     public void deleteService(Long id) {
+        if (!serviceRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Service", id);
+        }
         serviceRepository.deleteById(id);
     }
 }

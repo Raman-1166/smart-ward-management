@@ -15,27 +15,25 @@
                         </div>
 
                         <form th:action="@{/complaint/submit}" th:object="${complaint}" method="post">
-                            <!-- Ward Selection -->
+                            <!-- Ward Selection — submitted as a plain wardId param, resolved server-side -->
                             <div class="mb-4">
                                 <label for="ward" class="form-label fw-bold">Select Ward</label>
-                                <select th:field="*{ward.id}" class="form-select form-select-lg shadow-sm border-0 bg-light" id="ward" required>
+                                <select name="wardId" class="form-select form-select-lg shadow-sm border-0 bg-light" id="ward" required>
                                     <option value="" disabled selected>Which ward is this for?</option>
-                                    <option th:each="w : ${wards}" th:value="${w.id}" th:text="'Ward ' + ${w.id} + ': ' + ${w.name}"></option>
+                                    <option th:each="w : ${wards}" th:value="${w.id}" th:text="${w.name} + ' (' + ${w.area} + ')'"></option>
                                 </select>
                             </div>
 
                             <div class="row g-3 mb-4">
-                                <!-- Category Selection -->
+                                <!-- Category Selection — all categories from enum -->
                                 <div class="col-md-6">
                                     <label for="category" class="form-label fw-bold">Issue Category</label>
                                     <select th:field="*{category}" class="form-select shadow-sm border-0 bg-light" id="category" required>
-                                        <option value="GARBAGE">Garbage Disposal</option>
-                                        <option value="DRAINAGE">Drainage Issue</option>
-                                        <option value="SANITATION">Sanitation / Cleaning</option>
-                                        <option value="OTHER">Other</option>
+                                        <option value="" disabled selected>Select a category</option>
+                                        <option th:each="cat : ${categories}" th:value="${cat}" th:text="${cat.name().replace('_', ' ')}"></option>
                                     </select>
                                 </div>
-                                <!-- Photo URL Placeholder -->
+                                <!-- Photo URL -->
                                 <div class="col-md-6">
                                     <label for="photoUrl" class="form-label fw-bold">Photo URL (Optional)</label>
                                     <input type="url" th:field="*{photoUrl}" class="form-control shadow-sm border-0 bg-light" id="photoUrl" placeholder="https://example.com/image.jpg">
@@ -44,7 +42,7 @@
 
                             <div class="mb-4">
                                 <label for="description" class="form-label fw-bold">Detailed Description</label>
-                                <textarea th:field="*{description}" class="form-control shadow-sm border-0 bg-light" id="description" rows="5" required 
+                                <textarea th:field="*{description}" class="form-control shadow-sm border-0 bg-light" id="description" rows="5" required
                                           placeholder="Please provide precise details about the location and nature of the issue."></textarea>
                                 <div class="form-text text-muted small mt-2">Maximum 1000 characters.</div>
                             </div>

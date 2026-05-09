@@ -28,7 +28,7 @@
             <div class="col-md-4">
                 <div class="card border-0 bg-light p-4 text-center">
                     <h3 class="display-5 fw-bold text-success" th:text="${totalComplaints}">0</h3>
-                    <p class="text-muted mb-0">Total Issues Resolved</p>
+                    <p class="text-muted mb-0">Total Complaints Filed</p>
                 </div>
             </div>
             <div class="col-md-4">
@@ -70,7 +70,7 @@
                                                      th:aria-valuenow="${ward.cleanlinessScore}" aria-valuemin="0" aria-valuemax="100"></div>
                                             </div>
                                         </td>
-                                        <td><span class="badge bg-info text-dark">50+</span></td>
+                                        <td><span class="badge bg-info text-dark" th:text="${feedbackCountByWard[ward.id]}">0</span></td>
                                         <td class="text-success fw-bold" th:text="${ward.cleanlinessScore} + '%'">92%</td>
                                         <td>
                                             <a sec:authorize="isAuthenticated()" th:href="@{/wards/{id}(id=${ward.id})}" class="btn btn-sm btn-outline-success">View Details</a>

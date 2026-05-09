@@ -1,6 +1,8 @@
 package com.ward.system.controller.mvc;
 
+import com.ward.system.model.Category;
 import com.ward.system.model.Complaint;
+import com.ward.system.model.Ward;
 import com.ward.system.security.CustomUserDetails;
 import com.ward.system.service.ComplaintService;
 import com.ward.system.service.WardService;
@@ -24,11 +26,17 @@ public class ComplaintController {
     public String complaintForm(Model model) {
         model.addAttribute("complaint", new Complaint());
         model.addAttribute("wards", wardService.getAllWardsList());
+        model.addAttribute("categories", Category.values());
         return "complaint-form";
     }
 
     @PostMapping("/submit")
-    public String submitComplaint(@ModelAttribute Complaint complaint, @AuthenticationPrincipal CustomUserDetails userDetails) {
+    public String submitComplaint(@ModelAttribute Complaint complaint,
+                                  @RequestParam Long wardId,
+                                  @AuthenticationPrincipal CustomUserDetails userDetails) {
+        // Resolve the full Ward entity to avoid partial-entity persistence issues
+        Ward ward = wardService.getWardById(wardId);
+        complaint.setWard(ward);
         complaint.setUser(userDetails.getUser());
         complaintService.submitComplaint(complaint);
         return "redirect:/complaint/my";

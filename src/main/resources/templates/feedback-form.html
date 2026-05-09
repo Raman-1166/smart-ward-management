@@ -16,7 +16,8 @@
                         <form th:action="@{/feedback/submit}" th:object="${feedback}" method="post" id="feedbackForm">
                             <div class="mb-4">
                                 <label for="feedbackWard" class="form-label fw-bold">Select Ward to Rate</label>
-                                <select th:field="*{ward.id}" class="form-select border-0 bg-light p-3" id="feedbackWard" required>
+                                <!-- Use wardId param — resolved server-side to avoid partial-entity issues -->
+                                <select name="wardId" class="form-select border-0 bg-light p-3" id="feedbackWard" required>
                                     <option value="" disabled selected>Which ward are you rating?</option>
                                     <option th:each="w : ${wards}" th:value="${w.id}" th:text="${w.name}"></option>
                                 </select>

@@ -17,9 +17,11 @@ INSERT INTO wards (id, name, area, population, officer_name, cleanliness_score) 
 (3, 'Annapurna', 'South', 18000, 'Sneha Desai', 95.2);
 
 -- Users
--- Password for all users is 'password' (hash: $2a$10$36X03z3.XND1FrJqZGA51eiEsrz4d4.zBm2NxbQOiWof6b9msx.vC)
+-- Password for admin is 'Admin@123', for citizens is 'password'
+-- Admin hash: $2a$10$oDpWIFqxXl/Nwu8dGP3OReOtgFhUUGUWuaElh6mj6ysmzPpTd3HMe
+-- Citizen hash: $2a$10$36X03z3.XND1FrJqZGA51eiEsrz4d4.zBm2NxbQOiWof6b9msx.vC
 INSERT INTO users (id, name, email, password, role, ward_id, created_at) VALUES
-(1, 'System Admin', 'admin@smartward.com', '$2a$10$36X03z3.XND1FrJqZGA51eiEsrz4d4.zBm2NxbQOiWof6b9msx.vC', 'ADMIN', NULL, NOW()),
+(1, 'System Admin', 'admin@smartward.com', '$2a$10$oDpWIFqxXl/Nwu8dGP3OReOtgFhUUGUWuaElh6mj6ysmzPpTd3HMe', 'ADMIN', NULL, NOW()),
 (2, 'Raman Chourasiya', 'raman@example.com', '$2a$10$36X03z3.XND1FrJqZGA51eiEsrz4d4.zBm2NxbQOiWof6b9msx.vC', 'CITIZEN', 1, NOW()),
 (3, 'Indore Resident', 'resident@indore.in', '$2a$10$36X03z3.XND1FrJqZGA51eiEsrz4d4.zBm2NxbQOiWof6b9msx.vC', 'CITIZEN', 2, NOW());
 
