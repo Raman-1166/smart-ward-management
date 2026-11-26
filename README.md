@@ -1,99 +1,66 @@
-# Smart Ward Management
+# Smart Ward Management System
 
-## Quick Start
+A Java / Spring Boot web application for urban ward management, inspired by the **Swachh Survekshan** initiative. Citizens report civic issues and give feedback, and administrators track complaints, manage ward data and view analytics.
 
-1. Clone the repository.
-2. Set the required environment variables (Render, Docker, local dev):
-   - `SPRING_DATASOURCE_URL` – JDBC URL of your MySQL database (must start with `jdbc:mysql://`).
-   - `SPRING_DATASOURCE_USERNAME` – Database username (e.g., `avnadmin`).
-   - `SPRING_DATASOURCE_PASSWORD` – Database password.
-   - `PORT` – Optional, defaults to 8080.
+## Features
 
-   Example for an Aiven MySQL instance:
-   ```
-   SPRING_DATASOURCE_URL=jdbc:mysql://mysql-976f573-ramanchourasiya2005-59b4.g.aivencloud.com:16014/defaultdb?sslMode=REQUIRED
-   SPRING_DATASOURCE_USERNAME=avnadmin
-   SPRING_DATASOURCE_PASSWORD=YOUR_AIVEN_PASSWORD
-   ```
+### Citizens
+- Dashboard with submitted complaints and feedback
+- Complaint form with category and priority
+- Ward directory with local facilities (hospitals, schools, banks and more)
+- Feedback on ward services
 
-3. Build and run:
-   ```
-   ./mvnw clean package -DskipTests
-   java -jar target/smart-ward-management-1.0.jar
-   ```
+### Administrators
+- Analytics dashboard (complaint status, category distribution, feedback trends)
+- Create and update wards, services and users
+- Review and resolve citizen complaints
 
-The rest of the README remains unchanged. System V2
+## Tech Stack
+- Java 17, Spring Boot 3.2.4
+- Spring Security with role-based access and JWT
+- Spring Data JPA, MySQL
+- Thymeleaf templates, plain CSS
+- Lombok, Maven, Docker
 
-A comprehensive, production-ready administrative and citizen platform for urban ward management. Inspired by the **Swachh Survekshan** initiative, this system streamlines the interaction between citizens and local authorities to maintain and improve ward infrastructure.
+## Getting Started
 
-## 🚀 Features
+### Prerequisites
+- JDK 17+
+- MySQL server
+- Maven (or the included wrapper if present)
 
-### For Citizens
-- **Dashboard:** Personal overview of submitted complaints and feedback.
-- **Complaint Management:** Detailed form to report civic issues with priority and category.
-- **Ward Directory:** View details about various wards and the facilities available (Hospitals, Schools, Banks, etc.).
-- **Feedback System:** Provide feedback on ward services to help improve local governance.
+### Run locally
+```bash
+git clone https://github.com/Raman-1166/smart-ward-management.git
+cd smart-ward-management
+mvn spring-boot:run
+```
+The app starts at `http://localhost:8080`. By default it uses a local MySQL database named `smart_ward_management_db`.
 
-### For Administrators
-- **Real-time Analytics:** Dashboard with visualizing KPIs using charts (complaint status, category distribution, feedback trends).
-- **Ward Management:** Create, update, and manage ward-specific data and facilities.
-- **Issue Resolution:** Track and manage citizen complaints efficiently.
+### Configuration
+Set these environment variables to override the defaults (for Docker, Render or any host):
 
-## 🛠️ Technology Stack
-- **Backend:** Java 17, Spring Boot 3.2.4
-- **Security:** Spring Security (RBAC - Role-Based Access Control)
-- **Database:** MySQL
-- **ORM:** Spring Data JPA
-- **Templating:** Thymeleaf
-- **Styling:** Vanilla CSS (Modern UI/UX)
-- **Utilities:** Lombok, Maven
+| Variable | Purpose |
+|---|---|
+| `SPRING_DATASOURCE_URL` | JDBC URL, starts with `jdbc:mysql://` |
+| `SPRING_DATASOURCE_USERNAME` | Database username |
+| `SPRING_DATASOURCE_PASSWORD` | Database password |
+| `JWT_SECRET` | Secret used to sign JWT tokens |
+| `PORT` | Optional, defaults to 8080 |
 
-## 📋 Prerequisites
-- JDK 17 or higher
-- MySQL Server
-- Maven
+Never commit real credentials. Keep them in environment variables.
 
-## ⚙️ Installation & Setup
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/Raman-1166/smart-ward-management.git
-   cd smart-ward-management
-   ```
-
-2. **Database Configuration:**
-   Update `src/main/resources/application.properties` with your MySQL credentials:
-   ```properties
-   spring.datasource.url=jdbc:mysql://localhost:3306/ward_system
-   spring.datasource.username=your_username
-   spring.datasource.password=your_password
-   ```
-
-3. **Build the project:**
-   ```bash
-   mvn clean install
-   ```
-
-4. **Run the application:**
-   ```bash
-   mvn spring-boot:run
-   ```
-
-The application will be available at `http://localhost:8080`.
-
-## 📂 Project Structure
+## Project Structure
 ```text
 src/main/java/com/ward/system/
-├── config/       # Security and App configurations
-├── controller/   # Web and API controllers
-├── model/        # JPA Entities
-├── repository/   # Data Access Layer
-├── service/      # Business Logic
-└── util/         # Helper classes
+├── config/       # Security configuration
+├── controller/   # MVC and REST API controllers
+├── exception/    # Custom exceptions and global handler
+├── model/        # JPA entities
+├── repository/   # Data access layer
+├── security/     # JWT filter and user details
+└── service/      # Business logic
 ```
 
-## 🤝 Contributing
-Feel free to fork this project and submit pull requests. For major changes, please open an issue first to discuss what you would like to change.
-
-## 📄 License
-This project is licensed under the MIT License - see the LICENSE file for details.
+## Author
+Raman Chourasiya, Java developer from Indore. [GitHub](https://github.com/Raman-1166)
