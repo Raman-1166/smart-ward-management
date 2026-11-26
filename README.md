@@ -20,7 +20,7 @@ A Java / Spring Boot web application for urban ward management, inspired by the 
 - Spring Security with role-based access and JWT
 - Spring Data JPA, MySQL
 - Thymeleaf templates, plain CSS
-- Lombok, Maven
+- Lombok, Maven, Docker
 
 ## Getting Started
 
@@ -38,7 +38,7 @@ mvn spring-boot:run
 The app starts at `http://localhost:8080`. By default it uses a local MySQL database named `smart_ward_management_db`.
 
 ### Configuration
-Set these environment variables to override the defaults (for Render or any host):
+Set these environment variables to override the defaults (for Docker, Render or any host):
 
 | Variable | Purpose |
 |---|---|
